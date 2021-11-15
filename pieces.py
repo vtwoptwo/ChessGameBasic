@@ -14,7 +14,7 @@ class Piece(object):
     def alive(self):
         self.row = None
         self.col = None
-        self.alive = False
+        self.living = False
 
 class King(Piece):
     def __init__(self, row, col, color = 0):
@@ -38,7 +38,7 @@ class Queen(Piece):
         r = abs(row - self.row)
         c = abs(col - self.col)
 
-        if not (r == c or r  == 0 or c == 0):
+        if not (r == c or r == 0 or c == 0):
             return False
         return True
 
