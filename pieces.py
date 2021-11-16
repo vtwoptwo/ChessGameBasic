@@ -11,7 +11,7 @@ class Piece(object):
         self.row = row
         self.col = col
 
-    def alive(self):
+    def kill(self):
         self.row = None
         self.col = None
         self.living = False
