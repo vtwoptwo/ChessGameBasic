@@ -6,6 +6,7 @@ HEIGHT = 490
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (142, 142, 142)
+SILVER = (192, 192, 192)
 GREEN = (0, 128, 0)
 BROWN = (150, 75, 0)
 screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -20,8 +21,13 @@ color = {True: WHITE, False: BLACK}
 current_color = True
 
 while True:
+    target_square = None
+    turn = "white"
+
     screen.fill(GREY)
     pg.draw.rect(screen, BROWN, (20, 20, 440, 440))
+    COLOUR = SILVER if turn == "white" else BLACK
+
     for row in range(8):
         for square in range(8):
             pg.draw.rect(screen, color[current_color], ((40 + (square * 50)), 40 + (row * 50), 50, 50))
