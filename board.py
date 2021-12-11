@@ -19,11 +19,10 @@ pg.display.set_icon(icon)
 
 color = {True: WHITE, False: BLACK}
 current_color = True
+target_square = None
+turn = "white"
 
 while True:
-    target_square = None
-    turn = "white"
-
     screen.fill(GREY)
     pg.draw.rect(screen, BROWN, (20, 20, 440, 440))
     COLOUR = SILVER if turn == "white" else BLACK
