@@ -19,7 +19,7 @@ screen = pg.display.set_mode((WIDTH, HEIGHT))
 # ---Game---
 
 MATRIX_DIM = 8 
-SQ_SIZE = 500 // Dimension
+SQ_SIZE = 500 // MATRIX_DIM
 
 
 
