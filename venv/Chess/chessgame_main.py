@@ -30,7 +30,10 @@ GREEN = (0, 128, 0)
 BROWN = (150, 75, 0)
 
 # ---Images---
-PIECE_IMAGES= {} #implementation of a dictionary 
+
+PIECE_IMAGES= {} 
+#implementation of a dictionary high space complexity low time complexity 
+#static
 
 # loading images function 
 def load_images(): 
@@ -66,9 +69,6 @@ def drawGS(screen,gs):
     drawPieces(screen,gs.BOARD)
 
 
-
-
-
 # --- piece class ---
 
 #main driver code
@@ -84,7 +84,7 @@ def main():
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
 
-
+    #exectuted once 
     load_images()    
 
     # debug 
@@ -95,14 +95,37 @@ def main():
     drawGS(screen,gs)
     running = True 
     
-
+    klicked_SQ = ()
+    klick_PL = []
     while running:
     
         for EVENT in pg.event.get(): 
             if EVENT.type == pg.QUIT: 
                 running = False
 
+            # here i am just making sure that we handle mouse events (moving pieces etc) 
+
+            elif EVENT.type == pg.MOUSEBUTTONDOWN: 
+
+                pos = pg.mouse.get_pos()
+                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
+                 # base case invalid move 
+                if klicked_SQ == (row,col): 
+                    klicked_SQ = ()
+                    klick_PL = []
+                else: 
+                    klicked_SQ = (row, col)
+                    klick_PL.append(klicked_SQ)
+                if len(klick_PL) == 2:
+                    move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
+                    print(move.getNotation())
+                    gs.makeMove(move)
+                    klicked_SQ = () 
+                    klick_PL = []
+
+        drawGS(screen, gs)
         clock.tick(MAX_FPS)
+        pg.display.flip()
         
         
         pg.display.update()

@@ -17,4 +17,37 @@ class GameState():
 
         self.whiteMove = True
 
-        self.movehistory = [] # implementation of a stack :) 
+        self.movehistory = [] # implementation of a stack :)
+
+    def makeMove(self, move): 
+        self.BOARD[move.startRow][move.startCol]  = "--"
+        self.BOARD[move.endRow][move.endCol] = move.PieceMoved
+        self.movehistory.append(move) # for an undo move, just pop 
+        self.whiteMove = not self.whiteMove
+
+
+class Move():
+     # switching to true row and column notation with dictionaries 
+
+    num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
+    row_2_num = {v: k for k, v in num_2_row.items()}
+    lett_2_col = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8}
+    col_2_lett = {v: k for k, v in lett_2_col.items()}
+   
+    def __init__(self,start, end, BOARD): 
+        self.startRow = start[0]
+        self.startCol = start[1]
+        self.endRow = end[0]
+        self.endCol = end[1]
+        self.PieceMoved = BOARD[self.startRow][self.startCol]
+        self.PieceCaptured = BOARD[self.endRow][self.endCol]
+
+    def getNotation(self):
+        return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
+    
+    def get_lett(self, row, col): 
+        return self.col_2_lett[col] + self.row_2_num[row]
+
+
+
+        
