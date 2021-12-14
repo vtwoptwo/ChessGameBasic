@@ -17,13 +17,39 @@ class GameState():
 
         self.whiteMove = True
 
-        self.movehistory = [] # implementation of a stack :)
-
+        self.movehistory = [] # implementation of a stack :) this can be used to undo a move 
+                                #if we undo a move there actually needs to be an implementation of some 
+                                #rules...movehistory, versus backtracking? does it count as a move? 
+                                
+    # this function exectutes basic moves 
+    # there are several exception cases which we will address with separate functions
     def makeMove(self, move): 
         self.BOARD[move.startRow][move.startCol]  = "--"
         self.BOARD[move.endRow][move.endCol] = move.PieceMoved
         self.movehistory.append(move) # for an undo move, just pop 
         self.whiteMove = not self.whiteMove
+
+    #including an undo function
+
+    def undoMove(self):
+        if self.movehistory != 0:
+            umove = self.movehistory.pop()
+            self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
+            self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
+            self.whiteMove = not self.whiteMove
+
+    def ValidMoves(): 
+        pass
+
+    def AllPossibleMoves(): 
+        pass
+
+
+    #creating recommendation system using adjacency list and graphs
+    
+
+
+
 
 
 class Move():
@@ -40,7 +66,7 @@ class Move():
         self.endRow = end[0]
         self.endCol = end[1]
         self.PieceMoved = BOARD[self.startRow][self.startCol]
-        self.PieceCaptured = BOARD[self.endRow][self.endCol]
+        self.PieceDed = BOARD[self.endRow][self.endCol]
 
     def getNotation(self):
         return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)

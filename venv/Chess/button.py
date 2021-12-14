@@ -1,4 +1,4 @@
-import pygame
+
 import pygame
 from pygame.locals import *
 
@@ -75,40 +75,43 @@ class button():
         return action
 
 
+def main():
 
-again = button(75, 200, 'Play Again?')
-quit = button(325, 200, 'Quit?')
-down = button(75, 350, 'Down')
-up = button(325, 350, 'Up')
-
-
-run = True
-while run:
-
-    screen.fill(bg)
-
-    if again.draw_button():
-        print('Again')
-        counter = 0
-    if quit.draw_button():
-        print('Quit')
-    if up.draw_button():
-        print('Up')
-        counter += 1
-    if down.draw_button():
-        print('Down')
-        counter -= 1
-
-    counter_img = font.render(str(counter), True, red)
-    screen.blit(counter_img, (280, 450))
+    again = button(75, 200, 'Play Again?')
+    quit = button(325, 200, 'Quit?')
+    down = button(75, 350, 'Down')
+    up = button(325, 350, 'Up')
 
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False    
+    run = False
+    while run:
+
+        screen.fill(bg)
+
+        if again.draw_button():
+            print('Again')
+            counter = 0
+        if quit.draw_button():
+            print('Quit')
+        if up.draw_button():
+            print('Up')
+            counter += 1
+        if down.draw_button():
+            print('Down')
+            counter -= 1
+
+        counter_img = font.render(str(counter), True, red)
+        screen.blit(counter_img, (280, 450))
 
 
-    pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False    
 
 
-pygame.quit()
+        pygame.display.update()
+
+
+    pygame.quit()
+
+main()

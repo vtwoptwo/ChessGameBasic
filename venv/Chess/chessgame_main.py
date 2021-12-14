@@ -2,7 +2,7 @@
 
 import pygame as pg
 import chessgame_engine as Engine
-
+import button as button
 
 #global variables
 
@@ -31,9 +31,16 @@ BROWN = (150, 75, 0)
 
 # ---Images---
 
-PIECE_IMAGES= {} 
+PIECES= {} 
 #implementation of a dictionary high space complexity low time complexity 
 #static
+
+# add a value to each piece in the dictionary: 
+def addPieceValue(): 
+    pass
+    #here i am trying to add another value to each key which indicates the vallue fo each peice. 
+    #this is crucial in terms of being able to map out the
+    #weight of the edges later on with the recommendation system 
 
 # loading images function 
 def load_images(): 
@@ -41,7 +48,7 @@ def load_images():
     for piece in pieces: 
         imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
         case = {piece:  imagepiece}
-        PIECE_IMAGES.update(case)
+        PIECES.update(case)
 
 
 def drawGS(screen,gs): 
@@ -60,13 +67,15 @@ def drawPieces(screen,BOARD):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECE_IMAGES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
 def drawGS(screen,gs): 
     drawBoard(screen)
     drawPieces(screen,gs.BOARD)
 
+
+#button class 
 
 # --- piece class ---
 
@@ -83,17 +92,19 @@ def main():
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
 
-    #exectuted once 
-    load_images()    
+    #drawing on the screen 
+    load_images()
+
 
     # debug 
-    print(PIECE_IMAGES)
+    print(PIECES)
 
     # ---including engine---
     gs =  Engine.GameState()
     drawGS(screen,gs)
     running = True 
     
+
     klicked_SQ = ()
     klick_PL = []
     while running:
@@ -101,6 +112,13 @@ def main():
         for EVENT in pg.event.get(): 
             if EVENT.type == pg.QUIT: 
                 running = False
+
+
+
+
+            #key down
+
+          
 
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
@@ -112,7 +130,8 @@ def main():
                 if klicked_SQ == (row,col): 
                     klicked_SQ = ()
                     klick_PL = []
-                else: 
+                else:
+
                     klicked_SQ = (row, col)
                     klick_PL.append(klicked_SQ)
                 if len(klick_PL) == 2:
@@ -121,6 +140,11 @@ def main():
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
+
+            elif EVENT.type == pg.KEYDOWN:
+                if EVENT.key ==  pg.K_g: 
+                    gs.undoMove()    
+    
 
         drawGS(screen, gs)
         clock.tick(MAX_FPS)
