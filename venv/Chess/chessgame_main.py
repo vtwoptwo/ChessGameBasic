@@ -60,7 +60,6 @@ def drawPieces(screen,BOARD):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                print(piece)
                 screen.blit(PIECE_IMAGES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
@@ -126,7 +125,6 @@ def main():
         drawGS(screen, gs)
         clock.tick(MAX_FPS)
         pg.display.flip()
-        
         
         pg.display.update()
 
