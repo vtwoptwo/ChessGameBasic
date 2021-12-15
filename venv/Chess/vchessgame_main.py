@@ -207,25 +207,25 @@ def main():
 
             #key down
 
-          
+#blob
 
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
-                pos = pg.mouse.get_pos()
-                if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                posb = pg.mouse.get_pos()
+                if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.undoMove()
-                if WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                if WIDTH-WIDTH//3+85 <= posb[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.__init__()
-                if WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                    continue
+                if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     running = False
-                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
-
                 pos = pg.mouse.get_pos()
+                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
                  # base case invalid move 
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
-                    print(gs.BOARD)
+                    print(gs.BOARD[row][col])
                     klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
@@ -252,8 +252,8 @@ def main():
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
-            pos = pg.mouse.get_pos()
-            buttonColorManage(pos)
+            posbut = pg.mouse.get_pos()
+            buttonColorManage(posbut)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
