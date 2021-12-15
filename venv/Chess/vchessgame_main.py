@@ -94,7 +94,7 @@ def main():
     clock = pg.time.Clock()
 
 
-fdhafjdh
+
 
     #button class 
     class button():
@@ -221,8 +221,11 @@ fdhafjdh
                 if WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
                     running = False
                 col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
+
+                pos = pg.mouse.get_pos()
                  # base case invalid move 
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
+                    print(gs.BOARD)
                     klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
@@ -232,13 +235,13 @@ fdhafjdh
                     klick_PL.append(klicked_SQ)
                     print(klick_PL)
 
-                while len(klick_PL)==1: 
-                    #identify the move clicked create a potential move pMove()
-                    if EVENT.type == pg.KEYDOWN: 
-                        if EVENT.key == pg.K_e: #e for escape 
-                            klicked_SQ = ()
-                            klick_PL = []
-                            print(klick_PL)
+                # while len(klick_PL)==1: 
+                #     #identify the move clicked create a potential move pMove()
+                #     if EVENT.type == pg.KEYDOWN: 
+                #         if EVENT.key == pg.K_e: #e for escape 
+                #             klicked_SQ = ()
+                #             klick_PL = []
+                #             print(klick_PL)
 
                 #     #add the show recommendation
                 #     # print(move.getGraph())
