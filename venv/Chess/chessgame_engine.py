@@ -52,7 +52,7 @@ class GameState():
         piece = self.BOARD[move.startRow][move.StartCol]
         value_of_piece = None
         if piece == "bN":
-            pass
+            pas
             #for all node in all possible nodes that the knight can reach in one node
             #tempgraphforknight.add_vertex(node)
             #for node in all possiblenodes()
@@ -133,7 +133,7 @@ class Move():
 
     def getLegMoveKnight(self):
         MATRIX_DIM = 8 
-        self.possibeMoves = []
+        self.possibleMoves = []
         moveLim = [(-1,-2),(-1,2),(-2,-1),(-2,1), (1,-2),( 1,2),( 2,-1),( 2,1)]
 
         for dif in moveLim:
@@ -143,7 +143,7 @@ class Move():
             if self.getGenLegalMove(self.pstartRow, MATRIX_DIM) and self.getGenLegalMov(self.pstartCol, MATRIX_DIM):
                 self.possibleMoves.append((self.pstartRow, self.pstartCol))
             
-        return self.possibeMoves
+        return self.possibleMoves
 
 
         # we created a function that checks if the move is on the baord 
@@ -162,7 +162,7 @@ class Move():
     def getLegMovePawn(self): 
         pass
 
-    def getLegMovePawn(self): 
+    def getLegMoveRook(self): 
         pass
 
 
