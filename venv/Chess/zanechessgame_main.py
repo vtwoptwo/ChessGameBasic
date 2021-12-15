@@ -1,7 +1,7 @@
 #imported libraries
 
 import pygame as pg
-import chessgame_engine as Engine
+import zanechessgame_engine as Engine
 from pygame.locals import *
 
 #global variables
@@ -213,6 +213,7 @@ def main():
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
+                #Button Operations
                 posb = pg.mouse.get_pos()
                 if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.undoMove()
@@ -221,11 +222,17 @@ def main():
                     continue
                 if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     running = False
+
+
+                #Translating pixel to row,col coord
                 pos = pg.mouse.get_pos()
-                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
-                 # base case invalid move 
+                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE
+                coordinateRowColumn = [row,col]  
+                piece = gs.getPiece(coordinateRowColumn)
+                print(piece)
+
+                # base case invalid move, if invalid resets klick lists
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
-                    print(gs.BOARD[row][col])
                     klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
@@ -252,12 +259,13 @@ def main():
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
+
             posbut = pg.mouse.get_pos()
             buttonColorManage(posbut)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
-    
+
 
         drawGS(screen, gs)
         clock.tick(MAX_FPS)
