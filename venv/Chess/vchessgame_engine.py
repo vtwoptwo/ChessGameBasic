@@ -26,7 +26,7 @@ class GameState():
     # there are several exception cases which we will address with separate functions
     def makeMove(self, move): 
         if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
-            return # if true program continues without making changes
+            return  # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"
         self.BOARD[move.endRow][move.endCol] = move.PieceMoved
         self.movehistory.append(move) # for an undo move, just pop 
@@ -138,7 +138,7 @@ class Move():
 
     def getLegMoveKnight(self):
         MATRIX_DIM = 8 
-        self.possibleMoves = []
+        self.possibeMoves = []
         moveLim = [(-1,-2),(-1,2),(-2,-1),(-2,1), (1,-2),( 1,2),( 2,-1),( 2,1)]
 
         for dif in moveLim:
@@ -148,7 +148,7 @@ class Move():
             if self.getGenLegalMove(self.pstartRow, MATRIX_DIM) and self.getGenLegalMov(self.pstartCol, MATRIX_DIM):
                 self.possibleMoves.append((self.pstartRow, self.pstartCol))
             
-        return self.possibleMoves
+        return self.possibeMoves
 
 
         # we created a function that checks if the move is on the baord 
@@ -167,7 +167,7 @@ class Move():
     def getLegMovePawn(self): 
         pass
 
-    def getLegMoveRook(self): 
+    def getLegMovePawn(self): 
         pass
 
 
