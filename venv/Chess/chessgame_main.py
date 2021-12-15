@@ -185,8 +185,6 @@ def main():
     
     drawGS(screen,gs)
     running = True 
-    print(HEIGHT//100)
-    print(WIDTH-WIDTH//3)
     undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
     resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
     quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
@@ -249,8 +247,8 @@ def main():
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
-            pos = pg.mouse.get_pos()
-            buttonColorManage(pos)
+            posB = pg.mouse.get_pos()
+            buttonColorManage(posB)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
