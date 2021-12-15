@@ -2,7 +2,7 @@
 
 import pygame as pg
 import chessgame_engine as Engine
-import button as button
+from pygame.locals import *
 
 #global variables
 
@@ -35,6 +35,8 @@ PIECES= {}
 #implementation of a dictionary high space complexity low time complexity 
 #static
 
+
+    
 # add a value to each piece in the dictionary: 
 def addPieceValue(): 
     pass
@@ -54,6 +56,8 @@ def load_images():
 def drawGS(screen,gs): 
     drawBoard(screen)
     drawPieces(screen,gs.BOARD)
+    
+    
 
 def drawBoard(screen):
     colors = [WHITE, GREEN]
@@ -70,9 +74,6 @@ def drawPieces(screen,BOARD):
                 screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
-def drawGS(screen,gs): 
-    drawBoard(screen)
-    drawPieces(screen,gs.BOARD)
 
 
 #button class 
@@ -92,6 +93,86 @@ def main():
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
 
+
+
+
+    #button class 
+    class button():
+        
+        #colours for button and text
+        
+        
+        button_col = (255, 255, 255)
+        hover_col = (75, 225, 255)
+        click_col = (50, 150, 255)
+        text_col = (0,0,0)
+        width = 80
+        height = 50
+        
+
+        def __init__(self, x, y, text):
+            self.x = x
+            self.y = y
+            self.text = text
+
+        def draw_button(self):
+
+            global clicked
+            action = False
+            clicked = False
+            font = pg.font.SysFont('Constantia', 20)
+            #get mouse position
+            #pos = pg.mouse.get_pos()
+
+            #create pygame Rect object for the button
+            button_rect = Rect(self.x, self.y, self.width, self.height)
+            
+            #check mouseover and clicked conditions
+            
+            pg.draw.rect(screen, self.button_col, button_rect)
+            
+            #add shading to button
+            pg.draw.line(screen, BLACK, (self.x, self.y + self.height), (self.x + self.width, self.y + self.height), 2)
+            pg.draw.line(screen, BLACK, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
+
+            #add text to button
+            text_img = font.render(self.text, True, self.text_col)
+            text_len = text_img.get_width()
+            screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 18))
+            return action
+
+
+    def buttonColorManage(pos):
+            if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 80 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                undoButton.button_col = (GREEN)
+                resetButton.button_col = (WHITE)
+                resetButton.draw_button()
+                quitButton.button_col = (WHITE)
+                quitButton.draw_button()
+                undoButton.draw_button()
+            elif WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                resetButton.button_col = (GREEN)
+                undoButton.button_col = (WHITE)
+                undoButton.draw_button()
+                quitButton.button_col = (WHITE)
+                quitButton.draw_button()
+                resetButton.draw_button()
+            elif WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                quitButton.button_col = (GREEN)
+                undoButton.button_col = (WHITE)
+                undoButton.draw_button()
+                resetButton.button_col = (WHITE)
+                resetButton.draw_button()
+                quitButton.draw_button()
+            else:
+                undoButton.button_col = (WHITE)
+                undoButton.draw_button()
+                resetButton.button_col = (WHITE)
+                resetButton.draw_button()
+                quitButton.button_col = (WHITE)
+                quitButton.draw_button()
+            
+
     #drawing on the screen 
     load_images()
 
@@ -101,9 +182,17 @@ def main():
 
     # ---including engine---
     gs =  Engine.GameState()
+    
     drawGS(screen,gs)
     running = True 
-    
+    print(HEIGHT//100)
+    print(WIDTH-WIDTH//3)
+    undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
+    resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
+    quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
+    quitButton.draw_button()
+    resetButton.draw_button()
+    undoButton.draw_button()
 
     klicked_SQ = ()
     klick_PL = []
@@ -125,10 +214,16 @@ def main():
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
                 pos = pg.mouse.get_pos()
+                if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                    gs.undoMove()
+                if WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                    gs.__init__()
+                if WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                    running = False
                 col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
                  # base case invalid move 
-                if klicked_SQ == (row,col): 
-                    klicked_SQ = ()
+                if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
+                    klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
                 else:
@@ -150,14 +245,15 @@ def main():
                 
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    print(move.getNotation())
+                    #print(move.getNotation())
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
-
-            elif EVENT.type == pg.KEYDOWN:
-                if EVENT.key ==  pg.K_u: #u for undo
-                    gs.undoMove()    
+            pos = pg.mouse.get_pos()
+            buttonColorManage(pos)
+            #elif EVENT.type == pg.KEYDOWN:
+                #if EVENT.key ==  pg.K_u: #u for undo
+                    #gs.undoMove()    
     
 
         drawGS(screen, gs)

@@ -25,6 +25,8 @@ class GameState():
     # this function exectutes basic moves 
     # there are several exception cases which we will address with separate functions
     def makeMove(self, move): 
+        if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
+            return # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"
         self.BOARD[move.endRow][move.endCol] = move.PieceMoved
         self.movehistory.append(move) # for an undo move, just pop 
@@ -33,11 +35,14 @@ class GameState():
     #including an undo function
 
     def undoMove(self):
-        if self.movehistory != 0:
+        if len(self.movehistory) == 0:
+            return # makes sure program doesnt crash if undo button is pressed and move history is empty
+        else:
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
             self.whiteMove = not self.whiteMove
+            
 
     def ValidMoves(): 
         pass
