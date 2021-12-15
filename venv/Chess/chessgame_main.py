@@ -185,6 +185,8 @@ def main():
     
     drawGS(screen,gs)
     running = True 
+    print(HEIGHT//100)
+    print(WIDTH-WIDTH//3)
     undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
     resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
     quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
@@ -205,22 +207,25 @@ def main():
 
             #key down
 
-          
+#blob
 
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
-                pos = pg.mouse.get_pos()
-                if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                posb = pg.mouse.get_pos()
+                if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.undoMove()
-                if WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                if WIDTH-WIDTH//3+85 <= posb[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.__init__()
-                if WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+                    continue
+                if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     running = False
+                pos = pg.mouse.get_pos()
                 col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
                  # base case invalid move 
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
+                    print(gs.BOARD[row][col])
                     klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
@@ -230,13 +235,13 @@ def main():
                     klick_PL.append(klicked_SQ)
                     print(klick_PL)
 
-                while len(klick_PL)==1: 
-                    #identify the move clicked create a potential move pMove()
-                    if EVENT.type == pg.KEYDOWN: 
-                        if EVENT.key == pg.K_e: #e for escape 
-                            klicked_SQ = ()
-                            klick_PL = []
-                            print(klick_PL)
+                # while len(klick_PL)==1: 
+                #     #identify the move clicked create a potential move pMove()
+                #     if EVENT.type == pg.KEYDOWN: 
+                #         if EVENT.key == pg.K_e: #e for escape 
+                #             klicked_SQ = ()
+                #             klick_PL = []
+                #             print(klick_PL)
 
                 #     #add the show recommendation
                 #     # print(move.getGraph())
@@ -247,8 +252,8 @@ def main():
                     gs.makeMove(move)
                     klicked_SQ = () 
                     klick_PL = []
-            posB = pg.mouse.get_pos()
-            buttonColorManage(posB)
+            posbut = pg.mouse.get_pos()
+            buttonColorManage(posbut)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
