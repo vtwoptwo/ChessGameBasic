@@ -130,10 +130,24 @@ def main():
                 if klicked_SQ == (row,col): 
                     klicked_SQ = ()
                     klick_PL = []
+                
                 else:
 
                     klicked_SQ = (row, col)
                     klick_PL.append(klicked_SQ)
+                    print(klick_PL)
+
+                # while len(klick_PL)==1: 
+                #     #identify the move clicked create a potential move pMove()
+                #     if EVENT.type == pg.KEYDOWN: 
+                #         if EVENT.key == pg.K_e: #e for escape 
+                #             klicked_SQ = ()
+                #             klick_PL = []
+                #             print(klick_PL)
+
+                #     #add the show recommendation
+                #     # print(move.getGraph())
+                
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     print(move.getNotation())
@@ -142,7 +156,7 @@ def main():
                     klick_PL = []
 
             elif EVENT.type == pg.KEYDOWN:
-                if EVENT.key ==  pg.K_g: 
+                if EVENT.key ==  pg.K_u: #u for undo
                     gs.undoMove()    
     
 
