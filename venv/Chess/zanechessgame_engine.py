@@ -21,16 +21,29 @@ class GameState():
         self.movehistory = [] # implementation of a stack :) this can be used to undo a move 
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
-                                
+        self.Zombies = []
+    
+    def getPiece(self,pos):
+        if pos[0] >= 8 or pos[1] >= 8:
+            return
+        else:
+            print(pos)
+            return self.BOARD[pos[0]][pos[1]]
+    
     # this function exectutes basic moves 
     # there are several exception cases which we will address with separate functions
+
     def makeMove(self, move): 
+        if self.BOARD[move.endRow][move.endCol] != '--':
+            pass #self.Zombies Queue
         if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
             return # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"
         self.BOARD[move.endRow][move.endCol] = move.PieceMoved
         self.movehistory.append(move) # for an undo move, just pop 
         self.whiteMove = not self.whiteMove
+
+        
 
     #including an undo function
 
@@ -47,8 +60,15 @@ class GameState():
     def ValidMoves(): 
         pass
 
-    def AllPossibleMoves(): 
-        pass
+    def AllPossibleMoves(self,whiteMove):
+        for x in range(len(self.BOARD)):
+            for y in range(len(self.BOARD[x])):
+                if self.BOARD[x][y] != '--' and whiteMove:
+                    print("WhitePeice on White Move")
+                elif self.BOARD[x][y] != '--':
+                    print("BlackPeice on BlackMove")
+                else:
+                    print("Not Applicable")
     
 
     #creating recommendation system using adjacency list and graphs
@@ -72,6 +92,7 @@ class GameState():
         if piece == "bK":
             pass
             #same implementation as above except generate a different legal moves function for different pieces
+    
 
 class WGraph:
   def __init__(self):
@@ -128,6 +149,7 @@ class Move():
     
     def get_lett(self, row, col): 
         return self.col_2_lett[col] + self.row_2_num[row]
+
 
     def getGenLegalMov(self, matrix_dim):
         if self.startRow >= 0 and self.startRow < matrix_dim:
