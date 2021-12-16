@@ -120,6 +120,17 @@ def movesMadeTree(root, move):
     Engine.insert(root, move_text)
     Engine.print_tree(root)
 
+def castling(bool, move, root): 
+    #obtain a boolean from a button
+    castling_req = False
+    if castling_req is True:
+        king = move.BOARD[move.startRow][move.startCol]
+        rook = move.BOARD[move.endRow][move.endCol]
+        a  = root.search(king)
+        b = root.search(rook)
+        if a and b == None: 
+            pass #do the castling 
+
 
 #button class 
 
@@ -129,7 +140,7 @@ def movesMadeTree(root, move):
 
 def main():
     
-   
+
     # --- setup ---
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.init()
@@ -137,8 +148,6 @@ def main():
     pg.display.set_caption('Chess')
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
-
-
 
 
     #button class 
