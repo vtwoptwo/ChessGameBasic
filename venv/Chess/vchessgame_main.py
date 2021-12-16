@@ -60,6 +60,7 @@ def load_images():
 
 
 
+
 def drawGS(screen,gs): 
     drawBoard(screen)
     drawPieces(screen,gs.BOARD, SQ_SIZE)
@@ -82,12 +83,15 @@ def drawPieces(screen,BOARD, SQ_SIZE):
 
 
 
-def drawZombies(screen,BOARD, SQ_SIZE):
+def drawZombies(screen,BOARD):
     for row in range(MATRIX_DIM):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+                if piece[0] == 'w':
+                    screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+                else:
+                    screen.blit(PIECES[piece], pg.Rect(540, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
 
 
 # def blitMove(screen,move): 

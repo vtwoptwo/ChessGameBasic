@@ -1,8 +1,11 @@
 #imported libraries
 
+from tkinter.constants import S
+from zanechessgame_engine import TreeNode as t 
 import pygame as pg
 import zanechessgame_engine as Engine
 from pygame.locals import *
+import time
 
 #global variables
 
@@ -22,12 +25,16 @@ MAX_FPS = 15
 MATRIX_DIM = 8 
 SQ_SIZE = 500 // MATRIX_DIM
 
+ZSQ_SIZE = 240 // MATRIX_DIM 
 
 # ---Colors---
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 128, 0)
-BROWN = (150, 75, 0)
+GREEN = (0, 102, 0)
+BROWN = (51, 0, 102)
+
+# ---Images---
+font_obj = pg.font.Font('freesansbold.ttf', 32)
 
 # ---Images---
 
@@ -53,9 +60,11 @@ def load_images():
         PIECES.update(case)
 
 
+
+
 def drawGS(screen,gs): 
     drawBoard(screen)
-    drawPieces(screen,gs.BOARD)
+    drawPieces(screen,gs.BOARD, SQ_SIZE)
     
     
 
@@ -66,15 +75,46 @@ def drawBoard(screen):
             color = colors[((row+square)%2)]
             pg.draw.rect(screen, color, pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             
-def drawPieces(screen,BOARD):
+def drawPieces(screen,BOARD, SQ_SIZE):
     for row in range(MATRIX_DIM):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
                 screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
-def drawZombies():
-    pass
+
+
+def drawZombies(screen,BOARD,zedList):
+    for piece in range(len(zedList)):
+            if len(zedList) != 0 and piece in zedList and piece != "--":
+                if piece[0] == 'w':
+                    screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+                else:
+                    screen.blit(PIECES[piece], pg.Rect(540, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+            else:
+                pass
+
+
+# def blitMove(screen,move): 
+#     text = move.strNotation
+#     on = True
+#     while on == True: 
+#         text = font_obj.render(u"text", True,WHITE)
+#         textrect = text.get_rect()
+#         textrect.center = (500, 250)
+#         screen.blit(text,textrect)
+    
+#     time.sleep(1)
+#     on = False
+
+
+
+def movesMadeTree(root, move):
+    move_text = move.getNotationFull()
+    Engine.insert(root, move_text)
+    Engine.print_tree(root)
+
+
 
 
 #button class 
@@ -176,19 +216,20 @@ def main():
 
     #drawing on the screen 
     load_images()
-
+    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
 
     # ---including engine---
     gs =  Engine.GameState()
+    zoms = Engine.Zombies()
+    screen.fill(BROWN)
     
     drawGS(screen,gs)
     running = True 
     print(HEIGHT//100)
     print(WIDTH-WIDTH//3)
-    print(PIECES)
     undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
     resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
     quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
@@ -199,7 +240,7 @@ def main():
     klicked_SQ = ()
     klick_PL = []
     while running:
-        
+    
         for EVENT in pg.event.get(): 
             if EVENT.type == pg.QUIT: 
                 running = False
@@ -254,18 +295,18 @@ def main():
 
                 #     #add the show recommendation
                 #     # print(move.getGraph())
-                
+
+
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    #print(move.getNotation())
-                    gs.makeMove(move)
                     
-                    if len(gs.Zombies) != 0:
-                        for piece in gs.Zombies:
-                            image = PIECES[piece]
-                            drawZombiews()
-                            screen.blit(image, )
-                
+                    print(move.getNotationStart())
+                    # blitMove(screen,move)
+                    movesMadeTree(root, move)
+                    gs.makeMove(move)
+                    if len(gs.Zombies) != 0: 
+                        drawZombies(screen,zoms.whiteZombies,gs.Zombies)
+                        drawZombies(screen,zoms.blackZombies,gs.Zombies)
 
                     klicked_SQ = () 
                     klick_PL = []
