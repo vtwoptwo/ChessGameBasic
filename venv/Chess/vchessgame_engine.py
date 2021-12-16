@@ -71,16 +71,6 @@ class GameState():
     def ValidMoves(): 
         pass
 
-    def AllPossibleMoves(self,whiteMove):
-        for x in range(len(self.BOARD)):
-            for y in range(len(self.BOARD[x])):
-                if self.BOARD[x][y] != '--' and whiteMove:
-                    print("WhitePeice on White Move")
-                elif self.BOARD[x][y] != '--':
-                    print("BlackPeice on BlackMove")
-                else:
-                    print("Not Applicable")
-    
 
     #creating recommendation system using adjacency list and graphs
     
@@ -131,20 +121,65 @@ class pMove():
 
     num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     row_2_num = {v: k for k, v in num_2_row.items()}
-    lett_2_col = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     col_2_lett = {v: k for k, v in lett_2_col.items()}
    
     def __init__(self,start, BOARD): 
         self.pstartRow = start[0]
         self.pstartCol = start[1]
+
     # this class will handle cases which happen before a player makes a move 
+    
+    def getGenLegalMov(self, matrix_dim):
+        if self.pstartRow >= 0 and self.pstartRow < matrix_dim:
+            return True
+        else:
+            return False
+
+
+    def getLegMoveKnight(self):
+        MATRIX_DIM = 8 
+        self.possibleMoves = []
+        moveLim = [(-1,-2),(-1,2),(-2,-1),(-2,1), (1,-2),( 1,2),( 2,-1),( 2,1)]
+
+        for dif in moveLim:
+            self.pstartRow = self.pstartRow + moveLim[0]
+            self.pstartCol = self.pstartCol + moveLim[1]
+
+            if self.getGenLegalMov(self.pstartRow, MATRIX_DIM) and self.getGenLegalMov(self.pstartCol, MATRIX_DIM):
+                self.possibleMoves.append((self.pstartRow, self.pstartCol))
+            
+        return self.possibleMoves
+
+
+    #     # we created a function that checks if the move is on the baord 
+
+    #     pass
+
+    # def getLegMoveKing(self): 
+    #     pass
+
+    # def getLegMoveQueen(self): 
+    #     pass
+
+    # def getLegMoveBishop(self): 
+    #     pass
+
+    # def getLegMovePawn(self): 
+    #     pass
+
+    # def getLegMovePawn(self): 
+    #     #use heap for the double move
+
+
+
 
 class Move():
      # switching to true row and column notation with dictionaries 
 
     num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     row_2_num = {v: k for k, v in num_2_row.items()}
-    lett_2_col = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     col_2_lett = {v: k for k, v in lett_2_col.items()}
    
     def __init__(self,start, end, BOARD): 
@@ -162,46 +197,6 @@ class Move():
         return self.col_2_lett[col] + self.row_2_num[row]
 
 
-    def getGenLegalMov(self, matrix_dim):
-        if self.startRow >= 0 and self.startRow < matrix_dim:
-            return True
-        else:
-            return False
-
-
-    def getLegMoveKnight(self):
-        MATRIX_DIM = 8 
-        self.possibeMoves = []
-        moveLim = [(-1,-2),(-1,2),(-2,-1),(-2,1), (1,-2),( 1,2),( 2,-1),( 2,1)]
-
-        for dif in moveLim:
-            self.pstartRow = self.startRow + moveLim[0]
-            self.pstartCol = self.startCol + moveLim[1]
-
-            if self.getGenLegalMove(self.pstartRow, MATRIX_DIM) and self.getGenLegalMov(self.pstartCol, MATRIX_DIM):
-                self.possibleMoves.append((self.pstartRow, self.pstartCol))
-            
-        return self.possibeMoves
-
-
-        # we created a function that checks if the move is on the baord 
-
-        pass
-
-    def getLegMoveKing(self): 
-        pass
-
-    def getLegMoveQueen(self): 
-        pass
-
-    def getLegMoveBishop(self): 
-        pass
-
-    def getLegMovePawn(self): 
-        pass
-
-    def getLegMovePawn(self): 
-        pass
-
+    
 
         

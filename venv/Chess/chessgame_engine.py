@@ -121,7 +121,7 @@ class pMove():
 
     num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     row_2_num = {v: k for k, v in num_2_row.items()}
-    lett_2_col = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     col_2_lett = {v: k for k, v in lett_2_col.items()}
    
     def __init__(self,start, BOARD): 
@@ -134,7 +134,7 @@ class Move():
 
     num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     row_2_num = {v: k for k, v in num_2_row.items()}
-    lett_2_col = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     col_2_lett = {v: k for k, v in lett_2_col.items()}
    
     def __init__(self,start, end, BOARD): 

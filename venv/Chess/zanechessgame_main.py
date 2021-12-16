@@ -73,7 +73,8 @@ def drawPieces(screen,BOARD):
             if piece != "--":
                 screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
-
+def drawZombies():
+    pass
 
 
 #button class 
@@ -259,6 +260,13 @@ def main():
                     #print(move.getNotation())
                     gs.makeMove(move)
                     
+                    if len(gs.Zombies) != 0:
+                        for piece in gs.Zombies:
+                            image = PIECES[piece]
+                            drawZombiews()
+                            screen.blit(image, )
+                
+
                     klicked_SQ = () 
                     klick_PL = []
 

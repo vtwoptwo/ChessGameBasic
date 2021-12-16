@@ -1,7 +1,7 @@
 #imported libraries
 
 import pygame as pg
-import zanechessgame_engine as Engine
+import vchessgame_engine as Engine
 from pygame.locals import *
 
 #global variables
@@ -74,6 +74,17 @@ def drawPieces(screen,BOARD, SQ_SIZE):
             piece = BOARD[row][square]
             if piece != "--":
                 screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+
+
+
+def drawZombies(screen,BOARD, SQ_SIZE):
+    for row in range(MATRIX_DIM):
+        for square in range(MATRIX_DIM):
+            piece = BOARD[row][square]
+            if piece != "--":
+                screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+
+
 
 
 
@@ -259,11 +270,14 @@ def main():
 
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    #print(move.getNotation())
+                    
+                    print(move.getNotation())
                     gs.makeMove(move)
+                    
                     if len(gs.Zombies) != 0:
                       pass
 
+                    # if z in zombies.
 
 
                     klicked_SQ = () 
