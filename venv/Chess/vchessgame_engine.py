@@ -1,4 +1,4 @@
-
+from queue import Queue
 
 
 class GameState():
@@ -25,6 +25,7 @@ class GameState():
     # this function exectutes basic moves 
     # there are several exception cases which we will address with separate functions
     def makeMove(self, move): 
+        print(self.BOARD[move.startRow][move.startCol])
         if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
             return # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"

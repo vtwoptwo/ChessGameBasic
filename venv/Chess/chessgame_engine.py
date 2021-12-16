@@ -35,7 +35,8 @@ class GameState():
 
     def makeMove(self, move): 
         if self.BOARD[move.endRow][move.endCol] != '--':
-            pass #self.Zombies Queue
+            self.Zombies.append(self.BOARD[move.endRow][move.endCol])
+            print("Captured Pieces:",self.Zombies)
         if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
             return # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"
