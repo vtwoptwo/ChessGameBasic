@@ -129,7 +129,7 @@ def castling(bool, move, root):
         a  = root.search(king)
         b = root.search(rook)
         if a and b == None: 
-            pass #do the castling 
+            pass #do the castling with whatever
 
 
 #button class 
