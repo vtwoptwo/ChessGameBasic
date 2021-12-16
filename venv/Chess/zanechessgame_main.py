@@ -187,6 +187,7 @@ def main():
     running = True 
     print(HEIGHT//100)
     print(WIDTH-WIDTH//3)
+    print(PIECES)
     undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
     resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
     quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
@@ -197,7 +198,7 @@ def main():
     klicked_SQ = ()
     klick_PL = []
     while running:
-    
+        
         for EVENT in pg.event.get(): 
             if EVENT.type == pg.QUIT: 
                 running = False
@@ -257,6 +258,7 @@ def main():
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     #print(move.getNotation())
                     gs.makeMove(move)
+                    
                     klicked_SQ = () 
                     klick_PL = []
 
