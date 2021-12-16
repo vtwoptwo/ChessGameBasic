@@ -1,7 +1,7 @@
 #imported libraries
 
 import pygame as pg
-import chessgame_engine as Engine
+import zanechessgame_engine as Engine
 from pygame.locals import *
 
 #global variables
@@ -22,12 +22,13 @@ MAX_FPS = 15
 MATRIX_DIM = 8 
 SQ_SIZE = 500 // MATRIX_DIM
 
+ZSQ_SIZE = 240 // MATRIX_DIM 
 
 # ---Colors---
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 128, 0)
-BROWN = (150, 75, 0)
+GREEN = (0, 102, 0)
+BROWN = (51, 0, 102)
 
 # ---Images---
 
@@ -53,9 +54,10 @@ def load_images():
         PIECES.update(case)
 
 
+
 def drawGS(screen,gs): 
     drawBoard(screen)
-    drawPieces(screen,gs.BOARD)
+    drawPieces(screen,gs.BOARD, SQ_SIZE)
     
     
 
@@ -66,7 +68,7 @@ def drawBoard(screen):
             color = colors[((row+square)%2)]
             pg.draw.rect(screen, color, pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             
-def drawPieces(screen,BOARD):
+def drawPieces(screen,BOARD, SQ_SIZE):
     for row in range(MATRIX_DIM):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
@@ -182,6 +184,7 @@ def main():
 
     # ---including engine---
     gs =  Engine.GameState()
+    screen.fill(BROWN)
     
     drawGS(screen,gs)
     running = True 
@@ -207,12 +210,13 @@ def main():
 
             #key down
 
-#blob
+          
 
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
+                #Button Operations
                 posb = pg.mouse.get_pos()
                 if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.undoMove()
@@ -221,11 +225,17 @@ def main():
                     continue
                 if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     running = False
+
+
+                #Translating pixel to row,col coord
                 pos = pg.mouse.get_pos()
-                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE 
-                 # base case invalid move 
+                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE
+                coordinateRowColumn = [row,col]  
+                piece = gs.getPiece(coordinateRowColumn)
+                print(piece)
+
+                # base case invalid move, if invalid resets klick lists
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
-                    print(gs.BOARD[row][col])
                     klicked_SQ = ()                                 # clears clicked values
                     klick_PL = []
                 
@@ -245,19 +255,26 @@ def main():
 
                 #     #add the show recommendation
                 #     # print(move.getGraph())
-                
+
+
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     #print(move.getNotation())
                     gs.makeMove(move)
+                    if len(gs.Zombies) != 0:
+                      pass
+
+
+
                     klicked_SQ = () 
                     klick_PL = []
+
             posbut = pg.mouse.get_pos()
             buttonColorManage(posbut)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
-    
+
 
         drawGS(screen, gs)
         clock.tick(MAX_FPS)
