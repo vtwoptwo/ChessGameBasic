@@ -1,8 +1,10 @@
 #imported libraries
 
+from vchessgame_engine import TreeNode as t 
 import pygame as pg
-import zanechessgame_engine as Engine
+import vchessgame_engine as Engine
 from pygame.locals import *
+import time
 
 #global variables
 
@@ -22,12 +24,16 @@ MAX_FPS = 15
 MATRIX_DIM = 8 
 SQ_SIZE = 500 // MATRIX_DIM
 
+ZSQ_SIZE = 240 // MATRIX_DIM 
 
 # ---Colors---
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 128, 0)
-BROWN = (150, 75, 0)
+GREEN = (0, 102, 0)
+BROWN = (51, 0, 102)
+
+# ---Images---
+font_obj = pg.font.Font('freesansbold.ttf', 32)
 
 # ---Images---
 
@@ -53,9 +59,10 @@ def load_images():
         PIECES.update(case)
 
 
+
 def drawGS(screen,gs): 
     drawBoard(screen)
-    drawPieces(screen,gs.BOARD)
+    drawPieces(screen,gs.BOARD, SQ_SIZE)
     
     
 
@@ -66,12 +73,41 @@ def drawBoard(screen):
             color = colors[((row+square)%2)]
             pg.draw.rect(screen, color, pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             
-def drawPieces(screen,BOARD):
+def drawPieces(screen,BOARD, SQ_SIZE):
     for row in range(MATRIX_DIM):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
                 screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+
+
+
+def drawZombies(screen,BOARD, SQ_SIZE):
+    for row in range(MATRIX_DIM):
+        for square in range(MATRIX_DIM):
+            piece = BOARD[row][square]
+            if piece != "--":
+                screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+
+
+# def blitMove(screen,move): 
+#     text = move.strNotation
+#     on = True
+#     while on == True: 
+#         text = font_obj.render(u"text", True,WHITE)
+#         textrect = text.get_rect()
+#         textrect.center = (500, 250)
+#         screen.blit(text,textrect)
+    
+#     time.sleep(1)
+#     on = False
+
+
+
+def movesMadeTree(root, move):
+    move_text = move.getNotationFull()
+    Engine.insert(root, move_text)
+    Engine.print_tree(root)
 
 
 
@@ -175,13 +211,14 @@ def main():
 
     #drawing on the screen 
     load_images()
-
+    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
 
     # ---including engine---
     gs =  Engine.GameState()
+    screen.fill(BROWN)
     
     drawGS(screen,gs)
     running = True 
@@ -252,11 +289,22 @@ def main():
 
                 #     #add the show recommendation
                 #     # print(move.getGraph())
-                
+
+
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    #print(move.getNotation())
+                    
+                    print(move.getNotationStart())
+                    # blitMove(screen,move)
+                    movesMadeTree(root, move)
                     gs.makeMove(move)
+                    
+                    if len(gs.Zombies) != 0:
+                      pass
+
+                    # if z in zombies.
+
+
                     klicked_SQ = () 
                     klick_PL = []
 

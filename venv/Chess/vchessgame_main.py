@@ -105,7 +105,7 @@ def drawZombies(screen,BOARD, SQ_SIZE):
 
 
 def movesMadeTree(root, move):
-    move_text = str(move.getNotationStart)
+    move_text = move.getNotationFull()
     Engine.insert(root, move_text)
     Engine.print_tree(root)
 
@@ -211,7 +211,7 @@ def main():
 
     #drawing on the screen 
     load_images()
-    root = Engine.TreeNode("c")
+    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
