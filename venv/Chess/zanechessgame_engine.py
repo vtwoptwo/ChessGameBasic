@@ -1,3 +1,14 @@
+class Zombies(): 
+    def __init__(self): 
+        self.whiteZombies = [
+            ["wP""wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+        ]
+
+        self.blackZombies = [
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ]
 
 
 
