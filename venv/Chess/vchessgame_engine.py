@@ -200,7 +200,7 @@ class Move():
         return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
 
     def getNotationStart(self): 
-        return str(self.get_lett(self.startRow, self.startCol))
+        return self.get_lett(self.startRow, self.startCol)
 
     def strNotation(self): 
         return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))

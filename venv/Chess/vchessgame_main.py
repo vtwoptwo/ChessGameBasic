@@ -90,22 +90,22 @@ def drawZombies(screen,BOARD, SQ_SIZE):
                 screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
 
 
-# def blitMove(screen,move): 
-#     text = move.strNotation
-#     on = True
-#     while on == True: 
-#         text = font_obj.render(u"text", True,WHITE)
-#         textrect = text.get_rect()
-#         textrect.center = (500, 250)
-#         screen.blit(text,textrect)
+def blitMove(screen,move): 
+    text = move.strNotation()
+    on = True
+    while on == True: 
+         text = font_obj.render(text, True,WHITE)
+         textrect = text.get_rect()
+         textrect.center = (500, 250)
+         screen.blit(text,textrect)
     
-#     time.sleep(1)
-#     on = False
+    time.sleep(1)
+    on = False
 
 
 
 def movesMadeTree(root, move):
-    move_text = str(move.getNotationStart)
+    move_text = move.getNotationStart()
     Engine.insert(root, move_text)
     Engine.print_tree(root)
 
@@ -211,7 +211,7 @@ def main():
 
     #drawing on the screen 
     load_images()
-    root = Engine.TreeNode("c")
+    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
