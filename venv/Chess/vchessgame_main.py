@@ -100,14 +100,7 @@ def drawZombies(screen,BOARD):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-<<<<<<< HEAD
-                if piece[0] == 'w':
                     screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
-                else:
-                    screen.blit(PIECES[piece], pg.Rect(540, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
-=======
-                screen.blit(PIECES[piece][1], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
->>>>>>> 822c9fcfd81acf55bcec5b2f387f4b337a049102
 
 
 def blitMove(screen,move): 
