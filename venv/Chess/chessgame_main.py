@@ -294,7 +294,7 @@ def main():
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     
-                    print(move.getNotationStart())
+                    # print(move.getNotationStart())
                     # blitMove(screen,move)
                     movesMadeTree(root, move)
                     gs.makeMove(move)

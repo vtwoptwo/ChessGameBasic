@@ -70,7 +70,7 @@ def load_images():
         PIECES.update(case)
     print(PIECES)
     
-
+#include hashtable 
 
 
 def drawGS(screen,gs): 
@@ -130,7 +130,7 @@ def castling(bool, move, root):
         a  = root.search(king)
         b = root.search(rook)
         if a and b == None: 
-            pass #do the castling with whatever
+            pass #do the castling 
 
 
 #button class 
@@ -155,7 +155,6 @@ def main():
     class button():
         
         #colours for button and text
-        
         
         button_col = (255, 255, 255)
         hover_col = (75, 225, 255)
