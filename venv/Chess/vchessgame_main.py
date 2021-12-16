@@ -1,8 +1,10 @@
 #imported libraries
 
+from vchessgame_engine import TreeNode as t 
 import pygame as pg
 import vchessgame_engine as Engine
 from pygame.locals import *
+import time
 
 #global variables
 
@@ -29,6 +31,9 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 102, 0)
 BROWN = (51, 0, 102)
+
+# ---Images---
+font_obj = pg.font.Font('freesansbold.ttf', 32)
 
 # ---Images---
 
@@ -85,6 +90,24 @@ def drawZombies(screen,BOARD, SQ_SIZE):
                 screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
 
 
+# def blitMove(screen,move): 
+#     text = move.strNotation
+#     on = True
+#     while on == True: 
+#         text = font_obj.render(u"text", True,WHITE)
+#         textrect = text.get_rect()
+#         textrect.center = (500, 250)
+#         screen.blit(text,textrect)
+    
+#     time.sleep(1)
+#     on = False
+
+
+
+def movesMadeTree(root, move):
+    move_text = str(move.getNotationStart)
+    Engine.insert(root, move_text)
+    Engine.print_tree(root)
 
 
 
@@ -188,7 +211,7 @@ def main():
 
     #drawing on the screen 
     load_images()
-
+    root = Engine.TreeNode("c")
 
     # debug 
     print(PIECES)
@@ -271,7 +294,9 @@ def main():
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     
-                    print(move.getNotation())
+                    print(move.getNotationStart())
+                    # blitMove(screen,move)
+                    movesMadeTree(root, move)
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:

@@ -1,1 +1,2 @@
-  print(move.getNotation())
+
+                quitButton.button_col = (WHITE)

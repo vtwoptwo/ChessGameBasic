@@ -1,3 +1,28 @@
+
+
+class WGraph:
+  def __init__(self):
+    self.vertices = {}
+
+  def add_vertex(self, value):
+    if not value in self.vertices:
+      self.vertices[value] = []
+    return self.vertices[value]
+  
+  def add_edge(self, a, b, w): 
+    if not a in self.vertices:
+      return
+    a_edges = self.vertices[a]
+    if not b in a_edges:
+      a_edges.append((b, w)) # Add a tuple of two elements, bearing the target vertex and the weight of the edge.
+  
+  def print(self):
+    for vertex, edges in self.vertices.items():
+      print(f'{vertex} -> {edges}')
+
+
+
+
 class Zombies(): 
     def __init__(self): 
         self.whiteZombies = [
@@ -95,25 +120,6 @@ class GameState():
             #same implementation as above except generate a different legal moves function for different pieces
     
 
-class WGraph:
-  def __init__(self):
-    self.vertices = {}
-
-  def add_vertex(self, value):
-    if not value in self.vertices:
-      self.vertices[value] = []
-    return self.vertices[value]
-  
-  def add_edge(self, a, b, w): 
-    if not a in self.vertices:
-      return
-    a_edges = self.vertices[a]
-    if not b in a_edges:
-      a_edges.append((b, w)) # Add a tuple of two elements, bearing the target vertex and the weight of the edge.
-  
-  def print(self):
-    for vertex, edges in self.vertices.items():
-      print(f'{vertex} -> {edges}')
 
 
 class pMove(): 
@@ -190,8 +196,14 @@ class Move():
         self.PieceMoved = BOARD[self.startRow][self.startCol]
         self.PieceDed = BOARD[self.endRow][self.endCol]
 
-    def getNotation(self):
+    def getNotationFull(self):
         return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
+
+    def getNotationStart(self): 
+        return str(self.get_lett(self.startRow, self.startCol))
+
+    def strNotation(self): 
+        return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
     
     def get_lett(self, row, col): 
         return self.col_2_lett[col] + self.row_2_num[row]
@@ -200,3 +212,44 @@ class Move():
     
 
         
+class TreeNode:
+  def __init__(self, value):
+    self.value = value
+    self.left_child = None
+    self.right_child = None
+
+def print_tree(node, level=0):
+  if node:
+    print_tree(node.right_child, level + 1)
+    print(' ' * 4 * level + '->', node.value)
+    print_tree(node.left_child, level + 1)
+
+def insert(root, value):
+  if root is None: # We cannot insert on an empty root. The root should exist first.
+    return
+  parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
+  node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
+  new_node = TreeNode(value) # Our new node to be inserted.
+  while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
+    parent = node
+    if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
+      node = node.left_child
+    else: # Otherwise continue through the right subtree.
+      node = node.right_child
+  # We have found the parent of our new node:
+  if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
+    parent.left_child = new_node
+  else: # Otherwise, insert the new node at the right of the `parent`
+    parent.right_child = new_node
+
+def rcsearch(node, value):
+  if not node:
+    return
+  if node.value == value:
+    return node
+  if node.value > value:
+    return rcsearch(node.left_child, value)
+  else:
+    return rcsearch(node.right_child, value)
+
+    
