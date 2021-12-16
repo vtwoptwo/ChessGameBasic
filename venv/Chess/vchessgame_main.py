@@ -55,9 +55,21 @@ def load_images():
     pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
     for piece in pieces: 
         imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-        case = {piece:  imagepiece}
+        if piece[1] == "P":
+            case = {piece: (6,imagepiece)}
+        if piece[1] == "B":
+            case = {piece: (5,imagepiece)}
+        if piece[1] == "N":
+            case = {piece: (4,imagepiece)}
+        if piece[1] == "R":
+            case = {piece: (3,imagepiece)}
+        if piece[1] == "Q":
+            case = {piece: (2,imagepiece)}
+        if piece[1] == "K":
+            case = {piece: (1,imagepiece)}
         PIECES.update(case)
-
+    print(PIECES)
+    
 
 
 
@@ -79,7 +91,7 @@ def drawPieces(screen,BOARD, SQ_SIZE):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
 
@@ -88,32 +100,33 @@ def drawZombies(screen,BOARD):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
+<<<<<<< HEAD
                 if piece[0] == 'w':
                     screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
                 else:
                     screen.blit(PIECES[piece], pg.Rect(540, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+=======
+                screen.blit(PIECES[piece][1], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+>>>>>>> 822c9fcfd81acf55bcec5b2f387f4b337a049102
 
 
-# def blitMove(screen,move): 
-#     text = move.strNotation
-#     on = True
-#     while on == True: 
-#         text = font_obj.render(u"text", True,WHITE)
-#         textrect = text.get_rect()
-#         textrect.center = (500, 250)
-#         screen.blit(text,textrect)
+def blitMove(screen,move): 
+    text = move.strNotation()
+    on = True
+    while on == True: 
+         text = font_obj.render(text, True,WHITE)
+         textrect = text.get_rect()
+         textrect.center = (500, 250)
+         screen.blit(text,textrect)
     
-#     time.sleep(1)
-#     on = False
-
+    time.sleep(1)
+    on = False
 
 
 def movesMadeTree(root, move):
     move_text = move.getNotationFull()
     Engine.insert(root, move_text)
     Engine.print_tree(root)
-
-
 
 
 #button class 
@@ -304,7 +317,10 @@ def main():
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
-                      pass
+                      for zombie in gs.Zombie: 
+                          for i in range(7): 
+                              for j in range(8):
+                                screen.blit
 
                     # if z in zombies.
 
