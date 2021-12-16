@@ -99,9 +99,8 @@ class GameState():
 
     #creating recommendation system using adjacency list and graphs
     
-    def getGraph(self, move):
+    def getGraph(self, move, library):
         piece = self.BOARD[move.startRow][move.StartCol]
-        value_of_piece = None
         if piece == "bN":
             pass
             #for all node in all possible nodes that the knight can reach in one node

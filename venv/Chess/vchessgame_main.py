@@ -55,9 +55,21 @@ def load_images():
     pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
     for piece in pieces: 
         imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-        case = {piece:  imagepiece}
+        if piece[1] == "P":
+            case = {piece: (6,imagepiece)}
+        if piece[1] == "B":
+            case = {piece: (5,imagepiece)}
+        if piece[1] == "N":
+            case = {piece: (4,imagepiece)}
+        if piece[1] == "R":
+            case = {piece: (3,imagepiece)}
+        if piece[1] == "Q":
+            case = {piece: (2,imagepiece)}
+        if piece[1] == "K":
+            case = {piece: (1,imagepiece)}
         PIECES.update(case)
-
+    print(PIECES)
+    
 
 
 def drawGS(screen,gs): 
@@ -78,7 +90,7 @@ def drawPieces(screen,BOARD, SQ_SIZE):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
 
@@ -87,7 +99,7 @@ def drawZombies(screen,BOARD, SQ_SIZE):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECES[piece], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
+                screen.blit(PIECES[piece][1], pg.Rect(square*ZSQ_SIZE, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
 
 
 def blitMove(screen,move): 
@@ -103,17 +115,10 @@ def blitMove(screen,move):
     on = False
 
 
-
 def movesMadeTree(root, move):
-<<<<<<< HEAD
-    move_text = move.getNotationStart()
-=======
     move_text = move.getNotationFull()
->>>>>>> 0b6634a4488b4e15da162daa4b05261fa1f33031
     Engine.insert(root, move_text)
     Engine.print_tree(root)
-
-
 
 
 #button class 
@@ -304,7 +309,10 @@ def main():
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
-                      pass
+                      for zombie in gs.Zombie: 
+                          for i in range(7): 
+                              for j in range(8):
+                                screen.blit
 
                     # if z in zombies.
 
