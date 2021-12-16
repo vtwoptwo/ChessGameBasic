@@ -105,7 +105,11 @@ def blitMove(screen,move):
 
 
 def movesMadeTree(root, move):
+<<<<<<< HEAD
     move_text = move.getNotationStart()
+=======
+    move_text = move.getNotationFull()
+>>>>>>> 0b6634a4488b4e15da162daa4b05261fa1f33031
     Engine.insert(root, move_text)
     Engine.print_tree(root)
 
