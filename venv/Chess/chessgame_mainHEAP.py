@@ -38,14 +38,14 @@ font_obj = pg.font.Font('freesansbold.ttf', 32)
 # ---Images---
 
 PIECES= {} 
-PIECESNUM ={12: 'bP', 11: 'wP', 10: 'bB', 9: 'wB', 8: 'bN', 7: 'wN', 6: 'bR', 5: 'wR', 4: 'bQ', 3: 'wQ', 2: 'bK', 1: 'wK'}
 #implementation of a dictionary high space complexity low time complexity 
 #static
 
 
     
 # add a value to each piece in the dictionary: 
-
+def addPieceValue(): 
+    pass
     #here i am trying to add another value to each key which indicates the vallue fo each peice. 
     #this is crucial in terms of being able to map out the
     #weight of the edges later on with the recommendation system 
@@ -55,29 +55,17 @@ def load_images():
     pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
     for piece in pieces: 
         imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-        if piece == "bP":
-            case = {piece: (12,imagepiece)}
-        if piece == "bB":
-            case = {piece: (10,imagepiece)}
-        if piece == "bN":
-            case = {piece: (8,imagepiece)}
-        if piece == "bR":
+        if piece[1] == "P":
             case = {piece: (6,imagepiece)}
-        if piece == "bQ":
-            case = {piece: (4,imagepiece)}
-        if piece == "bK":
-            case = {piece: (2,imagepiece)}
-        if piece == "wP":
-            case = {piece: (11,imagepiece)}
-        if piece == "wB":
-            case = {piece: (9,imagepiece)}
-        if piece == "wN":
-            case = {piece: (7,imagepiece)}
-        if piece == "wR":
+        if piece[1] == "B":
             case = {piece: (5,imagepiece)}
-        if piece == "wQ":
+        if piece[1] == "N":
+            case = {piece: (4,imagepiece)}
+        if piece[1] == "R":
             case = {piece: (3,imagepiece)}
-        if piece == "wK":
+        if piece[1] == "Q":
+            case = {piece: (2,imagepiece)}
+        if piece[1] == "K":
             case = {piece: (1,imagepiece)}
         PIECES.update(case)
     print(PIECES)
@@ -136,42 +124,6 @@ def castling(bool, move, root):
         if a and b == None: 
             pass #do the castling 
 
-def createPIECESNUM():
-    for piece in PIECES:
-        case = {PIECES[piece][0]: piece}
-        PIECESNUM.update(case)
-    return PIECESNUM
-
-def create_array(gs):
-    numZ = []
-    for i in gs.Zombies:
-        num = PIECES[i][0]
-        print("Number:", num)
-        numZ.append(num)
-    return numZ
-
-def undoArray(numZ): 
-    strZ =[]
-    for num in numZ:
-        string = PIECESNUM[num]
-        strZ.append(string)
-    return strZ
-
-def quicksort(gs): 
-    array = create_array(gs)
-    # sort function
-    if len(array) < 2:
-        return array # One or none elements, the subarray is already sorted
-    pivot = int(len(array) / 2) # Pick the element at the middle of the array as pivot
-    pivot_value = array[pivot]
-    left = [x for x in array[0:pivot] + array[pivot+1:] if x <= pivot_value] # The left sub array with all elements smaller or equal than pivot_value
-    right = [x for x in array[0:pivot] + array[pivot+1:] if x > pivot_value] # The right subarray with all the elements larger than pivot_value
-    return quicksort(left) + [pivot_value] + quicksort(right)
-    
-def sortZombies(gs): 
-    gs.Zombies = undoArray(quicksort(gs))
-    return gs.Zombies
-
 
 
 # --- piece class ---
@@ -191,8 +143,8 @@ def main():
     wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
     screen.blit(wood_img, [0, 0])
     #button class 
-    createPIECESNUM()
-    print("PIECESNUM:", PIECESNUM)
+    
+            
 
     #drawing on the screen 
     load_images()
@@ -216,7 +168,7 @@ def main():
     resetButton.draw_button()
     undoButton.draw_button()
     castleButton.draw_button()
-
+    gs.initialize_dicts(PIECES)
     klicked_SQ = ()
     klick_PL = []
     while running:
@@ -289,8 +241,11 @@ def main():
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
-                        sortZombies(gs)
+                        screen.blit(wood_img, [0,0])
+                        gs.updateHeaps(PIECES)
                         gs.drawZombies(screen, PIECES)
+                        
+
                     
 
                     # if z in zombies.
@@ -319,13 +274,6 @@ def main():
 
 #within the driver code we have functions which help us manage the graphics of the game 
 
-TIME COMPLEXITIES
-
-Data Structures: 
-
-MATRIX
-for the matrix we actually change positions of pieces by having a time complexity of o(1)
-we take the x andy value separate for each predefined quare in the matrix and 
 
                 
 

@@ -42,24 +42,54 @@ class GameState():
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
         self.Zombies = []
-        self.Zombies2 =[]
-  
-        #when i sort zombies list, I need to sort them by the valuation of the piece..
-        # self.leftp = 0 
-        # self.rightp = 0 
-        # i need to create an array that transforms a zombie array into a number array
-        #and then back into the zombie array
+        self.ZombiesBlack = Heap(16,max_heap)
+        self.ZombiesWhite = Heap(16,max_heap)
+        self.PIECESW = {}
+        self.PIECESB = {}
+        self.ZombiesWhite = Heap(16,max_heap)
+        self.ZombiesBlack = Heap(16,max_heap)
+     
+    def initialize_dicts(self, dict):
+          for piece in dict:
+              if piece[0] == 'w':
+                  case = {dict[piece][0]: dict[piece][1]}
+                  self.PIECESW.update(case)
+              if piece[0] == 'b':
+                  case = {dict[piece][0]: dict[piece][1]}
+                  self.PIECESB.update(case)
+      
+    def updateHeaps(self,dict):
+          for zombie in self.Zombies:
+            number = dict[zombie][0]
+            if zombie[0] == 'w':
+              self.ZombiesWhite.insert(number)
+            if zombie[0] == 'b':
+              self.ZombiesBlack.insert(number)
+          print("Pieces White: ",self.PIECESW)
+          print("Pieces Black: ",self.PIECESB)
+          print("White Data Heap: ",self.ZombiesWhite.data)
+          print("Black Data Heap: ",self.ZombiesBlack.data)
+          
 
-    def drawZombies(self, screen, dict):
-      wp = 0
-      bp = 0 
-      for zombie in self.Zombies: 
-          if zombie[0] == "w": 
-              screen.blit(dict[zombie][1],(530, 50+wp))
-              wp += 45
-          if zombie[0] == "b":
-              screen.blit(dict[zombie][1],(640, 50+bp))
-              bp += 45
+    def drawZombies(self,screen, dict): 
+        wp = 0
+        bp = 0 
+        for value in self.ZombiesWhite.data:
+          print("Value White: ",value)
+          if value != 0:
+            whiteimg = self.PIECESW[value]
+            screen.blit(whiteimg,(530, 50+wp))
+            wp += 45
+          else: continue
+
+
+        for value in self.ZombiesBlack.data:
+          print("Value Black: ",value)
+          if value != 0:
+            blackimg = self.PIECESB[value]
+            screen.blit(blackimg,(570, 50+bp))
+            bp += 45
+          else: continue
           
 
     def getPiece(self,pos):
@@ -68,9 +98,9 @@ class GameState():
         else:
             print(pos)
             return self.BOARD[pos[0]][pos[1]]
-      
-  # this function exectutes basic moves 
-  # there are several exception cases which we will address with separate functions
+    
+    # this function exectutes basic moves 
+    # there are several exception cases which we will address with separate functions
 
     def makeMove(self, move): 
         if self.BOARD[move.endRow][move.endCol] != '--':
@@ -97,19 +127,8 @@ class GameState():
             root.movesUndoTree(root,umove)
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
-            
             self.whiteMove = not self.whiteMove
-            
-# def undoTree(root, umove):
-#   umove_text = umove.getNotationFull()
-#   if root is not None:
-#     root.remove(root, umove_text)
 
-
-    def ValidMoves(): 
-        pass
-
-    #creating recommendation system using adjacency list and graphs
     
     def getGraph(self, move, library):
         piece = self.BOARD[move.startRow][move.StartCol]
@@ -120,9 +139,6 @@ class GameState():
             #for node in all possiblenodes()
             # w = weight of each destination node extracted from the dictionary
             #tempgraphadd_edge(piece_node, node, w) 
-            # 
-            # 
-
             #calculate shortest path node
             #
 
@@ -366,7 +382,73 @@ class TreeNode:
  
     return root
     
+class Heap:
+  def __init__(self, max_size, priority_func):
+    self.data = [0] * max_size # Initialize our data container array. It will be an array of size `max_size`, with all its values zeroed.
+    self.item_count = 0 # The next empty slot where to insert new elements
+    self.max_size = max_size # Keep the max_size as an upper bound for out Heap
+    self.priority = priority_func # The priority function to decide which of two elements has the higest priority.
+    
+  def parent_index(self, i):
+    return ((i + 1) // 2) - 1
+    
+  def left_child_index(self, i):
+    return 2 * (i + 1) - 1
+    
+  def right_child_index(self, i):
+    return 2 * (i + 1)
+    
+  def insert(self, value):
+    if self.item_count == self.max_size: # Heap Overflow. Do not insert if the Heap is full
+      return
+    self.data[self.item_count] = value # Store the new element at the next empty spot.
+    self.bubble_up(self.item_count) # Then, make it bubble up while its priority is higher than that of its parents.
+    self.item_count += 1 
 
+  def extract(self):
+    if self.item_count == 0: # Heap Underflow. We cannot extract from the heap if it's empty.
+      return
+    value = self.data[0] # The root of our heap is at pos 0 of our data array
+    self.item_count -= 1
+    self.data[0] = self.data[self.item_count] # Move the last element to the root of the heap
+    self.bubble_down(0) # And then, make it bubble down while its priority is lower than that of its children
+    self.data[self.item_count] = 0 # Clear the last element. This is not necessary, since this index shall be overriden upon the next insertion.
+    return value
+    
+  def bubble_up(self, i):
+    parent = self.parent_index(i)
+    while parent >= 0: # While we do not overpass the root index.
+      if self.priority(self.data[parent], self.data[i]) < 0: # If the element at `i` has a higher priority than its parent, swap them.
+        self.data[parent], self.data[i] = self.data[i], self.data[parent]
+        # This part was missing from the class session: we need to keep on bubling up, so we readjust the parent and child pointers
+        i = parent # Continue with the grandparent, that is now the parent
+        parent = self.parent_index(i)
+      else:
+        break
+
+        
+  def bubble_down(self, i):
+    while self.left_child_index(i) < self.item_count: # While we do not overpass the last item of our Heap
+      # Get the indices of the left and right children of `i`
+      right_child = self.right_child_index(i)
+      left_child = self.left_child_index(i)
+      if right_child >= self.item_count: # In this case, the righ_child index overpass the last item, so it means there is no right child.
+        child = left_child # So the item to compare the parent against, this is `child`, is the left_child.
+      elif self.priority(self.data[left_child], self.data[right_child]) > 0: # Now select the child with the highest priority of the two.
+        child = left_child
+      else:
+        child = right_child
+      if self.priority(self.data[i], self.data[child]) >= 0: # If the parent has a higher priority than its children, then we stop iterating, since the priority hierarchy is respected.
+        return
+      self.data[i], self.data[child] = self.data[child], self.data[i] # Else, swap parent and child, and keep iterating all the way down.
+      i = child
+
+
+def max_heap(x, y):
+  return x - y
+
+def min_heap(x, y):
+  return y - x
       
 
 class button():
