@@ -42,8 +42,6 @@ class GameState():
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
         self.Zombies = []
-        self.ZombiesBlack = Heap(16,max_heap)
-        self.ZombiesWhite = Heap(16,max_heap)
 
 
     def drawZombies(self, screen, dict):
@@ -51,6 +49,8 @@ class GameState():
       bp = 0 
       PIECESW = {}
       PIECESB = {}
+      ZombiesWhite = Heap(16,max_heap)
+      ZombiesBlack = Heap(16,max_heap)
       for piece in dict:
           if piece[0] == 'w':
               case = {dict[piece][0]: dict[piece][1]}
@@ -61,32 +61,28 @@ class GameState():
       
       for zombie in self.Zombies:
         number = dict[zombie][0]
-        print("Number: ",number)
         if zombie[0] == 'w':
-          self.ZombiesWhite.insert(number)
+          ZombiesWhite.insert(number)
         if zombie[0] == 'b':
-          self.ZombiesBlack.insert(number)
+          ZombiesBlack.insert(number)
+      print("Pieces White: ",PIECESW)
+      print("Pieces Black: ",PIECESB)
+      print("White Data Heap: ",ZombiesWhite.data)
+      print("Black Data Heap: ",ZombiesBlack.data)
 
-      print("White Data Heap: ",self.ZombiesWhite.data)
-      print("Black Data Heap: ",self.ZombiesBlack.data)
-
-      for value in self.ZombiesWhite.data:
-        if self.ZombiesWhite.data[value] != 0:
+      for value in ZombiesWhite.data:
+        if value != 0:
           whiteimg = PIECESW[value]
           screen.blit(whiteimg,(530, 50+wp))
           wp += 45
         else: continue
           
-          
-      for value in self.ZombiesBlack.data:
-        if self.ZombiesBlack.data[value] != 0:
+      for value in ZombiesBlack.data:
+        if value != 0:
           blackimg = PIECESB[value]
-          screen.blit(blackimg,(530, 50+bp))
+          screen.blit(blackimg,(570, 50+bp))
           bp += 45
         else: continue
-
-      print(PIECESB)
-      print(PIECESW)
 
       # for zombie in self.Zombies: 
       #     if zombie[0] == "w": 
@@ -101,7 +97,6 @@ class GameState():
         if pos[0] >= 8 or pos[1] >= 8:
             return
         else:
-            print(pos)
             return self.BOARD[pos[0]][pos[1]]
     
     # this function exectutes basic moves 
@@ -110,7 +105,6 @@ class GameState():
     def makeMove(self, move): 
         if self.BOARD[move.endRow][move.endCol] != '--':
             self.Zombies.append(self.BOARD[move.endRow][move.endCol])
-            print("Captured Pieces:",self.Zombies)
         if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
             return # if true program continues without making changes
         self.BOARD[move.startRow][move.startCol]  = "--"
@@ -317,7 +311,6 @@ class TreeNode:
       return
 
     self.inorder(root.left_child)
-    print(root.value, end = '')
     self.inorder(root.right_child)
 
 

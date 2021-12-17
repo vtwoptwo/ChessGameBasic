@@ -242,6 +242,7 @@ def main():
                     
                     if len(gs.Zombies) != 0:
                         gs.drawZombies(screen, PIECES)
+                        
                     
 
                     # if z in zombies.
