@@ -1,6 +1,5 @@
 #imported libraries
-
-from vchessgame_engine import TreeNode as t 
+from vchessgame_engine import Tree 
 import pygame as pg
 import vchessgame_engine as Engine
 from pygame.locals import *
@@ -17,6 +16,8 @@ pg.init()
 WIDTH = 750
 HEIGHT = 900
 MAX_FPS = 15
+
+root = Tree("e4")
 
 
 # ---Game---
@@ -43,12 +44,6 @@ PIECES= {}
 
 
     
-# add a value to each piece in the dictionary: 
-def addPieceValue(): 
-    pass
-    #here i am trying to add another value to each key which indicates the vallue fo each peice. 
-    #this is crucial in terms of being able to map out the
-    #weight of the edges later on with the recommendation system 
 
 # loading images function 
 def load_images(): 
@@ -111,10 +106,10 @@ def blitMove(screen,move):
     on = False
 
 
-def movesMadeTree(root, move):
+def movesMadeTree( r, move):
     move_text = move.getNotationFull()
-    Engine.insert(root, move_text)
-    Engine.print_tree(root)
+    root.insert(r, move_text)
+    root.print_tree(r)
 
 def castling(bool, move, root): 
     #obtain a boolean from a button
@@ -224,7 +219,6 @@ def main():
 
     #drawing on the screen 
     load_images()
-    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
@@ -256,11 +250,10 @@ def main():
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
-
                 #Button Operations
                 posb = pg.mouse.get_pos()
                 if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
-                    gs.undoMove()
+                    gs.undoMove(movesMadeTree)
                 if WIDTH-WIDTH//3+85 <= posb[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
                     gs.__init__()
                     continue

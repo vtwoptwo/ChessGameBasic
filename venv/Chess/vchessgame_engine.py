@@ -20,22 +20,6 @@ class WGraph:
     for vertex, edges in self.vertices.items():
       print(f'{vertex} -> {edges}')
 
-
-
-
-class Zombies(): 
-    def __init__(self): 
-        self.whiteZombies = [
-            ["wP""wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
-        ]
-
-        self.blackZombies = [
-            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-        ]
-
-
 class GameState():
     def __init__(self):
         # so far a 2d matrix 
@@ -94,18 +78,19 @@ class GameState():
 
     #including an undo function
 
-    def undoMove(self):
+    def undoMove(self, tree):
         if len(self.movehistory) == 0:
             return # makes sure program doesnt crash if undo button is pressed and move history is empty
         else:
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
-            self.whiteMove = not self.whiteMove
-            
 
-    def ValidMoves(): 
-        pass
+            #based on the same logic as previously inserting nodes to the BST
+            #we now remove the node by receiving the full move notation as a string and
+            #calling the TreeNode.remove() function 
+            tree.remove(umove.getNotationFull)
+            self.whiteMove = not self.whiteMove
 
 
     #creating recommendation system using adjacency list and graphs
@@ -218,49 +203,86 @@ class Move():
     def get_lett(self, row, col): 
         return self.col_2_lett[col] + self.row_2_num[row]
 
-
-
-    
-
         
-class TreeNode:
+class Tree:
   def __init__(self, value):
     self.value = value
     self.left_child = None
     self.right_child = None
 
-def print_tree(node, level=0):
-  if node:
-    print_tree(node.right_child, level + 1)
-    print(' ' * 4 * level + '->', node.value)
-    print_tree(node.left_child, level + 1)
+  def print_tree(self, node, level=0):
+    if node:
+      self.print_tree(node.right_child, level + 1)
+      print(' ' * 4 * level + '->', node.value)
+      self.print_tree(node.left_child, level + 1)
 
-def insert(root, value):
-  if root is None: # We cannot insert on an empty root. The root should exist first.
-    return
-  parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
-  node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
-  new_node = TreeNode(value) # Our new node to be inserted.
-  while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
-    parent = node
-    if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
-      node = node.left_child
-    else: # Otherwise continue through the right subtree.
-      node = node.right_child
-  # We have found the parent of our new node:
-  if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
-    parent.left_child = new_node
-  else: # Otherwise, insert the new node at the right of the `parent`
-    parent.right_child = new_node
 
-def rcsearch(node, value):
-  if not node:
-    return
-  if node.value == value:
-    return node
-  if node.value > value:
-    return rcsearch(node.left_child, value)
-  else:
-    return rcsearch(node.right_child, value)
+  def minNode(node): 
+    n = node
+    while (n.left_child is not None): 
+      n = n.left_child
+    return n 
 
+  def remove(self, root,value): 
+    #this function is created to facilitate the undo button
+    if root is None: 
+      return root
     
+    if value < root.value: #here i am just checking whether to go left or right 
+      root.left_child = self.remove(root.left_child, value) #recursive function to make sure to delete any child from the left 
+                                                        #since it was identified as smaller than the value
+                                                        #we go through the function again only find that root is none and return root 
+    elif(value > root.value): 
+      root.right_child = self.remove(root.right_child, value)
+
+    else: 
+
+      #checking for cases where there is no child in requested place in the tree
+      if root.left is None:
+        t = root.right_child
+        root = None
+        return t 
+      
+      elif root.right_child is None: 
+        t = root.left_child
+        root = None
+        return t
+
+
+      t = self.minNode(self, root.right_child)    
+      root.value = t.value
+
+      root.right_child = self.remove(root.right_child, t.value)
+    
+    return root
+
+
+  def insert(root, value):
+    if root is None: # We cannot insert on an empty root. The root should exist first.
+      return
+    parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
+    node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
+    new_node = Tree(value) # Our new node to be inserted.
+    while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
+      parent = node
+      if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
+        node = node.left_child
+      else: # Otherwise continue through the right subtree.
+        node = node.right_child
+    # We have found the parent of our new node:
+    if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
+      parent.left_child = new_node
+    else: # Otherwise, insert the new node at the right of the `parent`
+      parent.right_child = new_node
+
+  def rcsearch(self, node, value):
+    if not node:
+      return
+    if node.value == value:
+      return node
+    if node.value > value:
+      return self.rcsearch(node.left_child, value)
+    else:
+      return self.rcsearch(node.right_child, value)
+
+      
