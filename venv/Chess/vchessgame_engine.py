@@ -145,7 +145,6 @@ class pMove():
         else:
             return False
 
-
     def getLegMoveKnight(self):
         MATRIX_DIM = 8 
         self.possibleMoves = []
