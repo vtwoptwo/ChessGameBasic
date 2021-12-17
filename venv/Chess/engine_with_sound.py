@@ -1,310 +1,448 @@
-#imported libraries
-
-from engine_with_sound import TreeNode as t 
 import pygame as pg
-import engine_with_sound as Engine
+from playsound import playsound
 from pygame.locals import *
-import time
+class WGraph:
+  def __init__(self):
+    self.vertices = {}
 
-#global variables
-
-#initilizing pyagme just in case 
-
-pg.init()
-
-# ---Window---
-
-WIDTH = 750
-HEIGHT = 900
-MAX_FPS = 15
-
-
-# ---Game---
-
-MATRIX_DIM = 8 
-SQ_SIZE = 500 // MATRIX_DIM
-
-ZSQ_SIZE = 240 // MATRIX_DIM 
-
-# ---Colors---
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 102, 0)
-BROWN = (51, 0, 102)
-
-# ---Images---
-font_obj = pg.font.Font('freesansbold.ttf', 32)
-
-# ---Images---
-
-PIECES= {} 
-#implementation of a dictionary high space complexity low time complexity 
-#static
-
-
-    
-# add a value to each piece in the dictionary: 
-def addPieceValue(): 
-    pass
-    #here i am trying to add another value to each key which indicates the vallue fo each peice. 
-    #this is crucial in terms of being able to map out the
-    #weight of the edges later on with the recommendation system 
-
-# loading images function 
-def load_images(): 
-    pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
-    for piece in pieces: 
-        imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-        if piece[1] == "P":
-            case = {piece: (6,imagepiece)}
-        if piece[1] == "B":
-            case = {piece: (5,imagepiece)}
-        if piece[1] == "N":
-            case = {piece: (4,imagepiece)}
-        if piece[1] == "R":
-            case = {piece: (3,imagepiece)}
-        if piece[1] == "Q":
-            case = {piece: (2,imagepiece)}
-        if piece[1] == "K":
-            case = {piece: (1,imagepiece)}
-        PIECES.update(case)
-    print(PIECES)
-    
-#include hashtable 
-
-
-
-def drawGS(screen,gs): 
-    drawBoard(screen)
-    drawPieces(screen,gs.BOARD, SQ_SIZE)
-    
-    
-
-def drawBoard(screen):
-    colors = [WHITE, GREEN]
-    for row in range(MATRIX_DIM):
-        for square in range(MATRIX_DIM):
-            color = colors[((row+square)%2)]
-            pg.draw.rect(screen, color, pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            
-def drawPieces(screen,BOARD, SQ_SIZE):
-    for row in range(MATRIX_DIM):
-        for square in range(MATRIX_DIM):
-            piece = BOARD[row][square]
-            if piece != "--":
-                screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+  def add_vertex(self, value):
+    if not value in self.vertices:
+      self.vertices[value] = []
+    return self.vertices[value]
+  
+  def add_edge(self, a, b, w): 
+    if not a in self.vertices:
+      return
+    a_edges = self.vertices[a]
+    if not b in a_edges:
+      a_edges.append((b, w)) # Add a tuple of two elements, bearing the target vertex and the weight of the edge.
+  
+  def print(self):
+     for vertex, edges in self.vertices.items():
+       print(f'{vertex} -> {edges}')
 
 
 
 
+class Zombies(): 
+    def __init__(self): 
+        self.whiteZombies = [
+            ["wP""wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+        ]
 
-def blitMove(screen,move): 
-    text = move.strNotation()
-    on = True
-    while on == True: 
-         text = font_obj.render(text, True,WHITE)
-         textrect = text.get_rect()
-         textrect.center = (500, 250)
-         screen.blit(text,textrect)
-    
-    time.sleep(1)
-    on = False
-
+        self.blackZombies = [
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ]
 
 
-
-def castling(bool, move, root): 
-    #obtain a boolean from a button
-    castling_req = False
-    if castling_req is True:
-        king = move.BOARD[move.startRow][move.startCol]
-        rook = move.BOARD[move.endRow][move.endCol]
-        a  = root.search(king)
-        b = root.search(rook)
-        if a and b == None: 
-            pass #do the castling 
-
-def removeFromTree(root,node):
-    move_text = node.getNotationFull()
-    root.remove(root,move_text)
-
-# --- piece class ---
-
-#main driver code
-
-def main():
-    
-
-    # --- setup ---
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
-    pg.init()
-    icon = pg.image.load( "venv/Chess/images/bQ.png")
-    pg.display.set_caption('Chess')
-    pg.display.set_icon(icon)   
-    clock = pg.time.Clock()
-    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
-    screen.blit(wood_img, [0, 0])
-    #button class 
-    
-            
-
-    #drawing on the screen 
-    load_images()
-    root = t('e4')
-
-    # debug 
-    print(PIECES)
-
-    # ---including engine---
-    gs =  Engine.GameState()
-    val = 1
-    gs.soundval(val)
-    drawGS(screen,gs)
-    running = True 
-    print(HEIGHT-HEIGHT//2.5)
-    print(WIDTH//100)
-    undoButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO',screen)
-    resetButton = Engine.button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET',screen)
-    quitButton = Engine.button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT',screen)
-    castleButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5 + 70, 'CASTLE-ME',screen)
-    quitButton.draw_button()
-    resetButton.draw_button()
-    undoButton.draw_button()
-    castleButton.draw_button()
-    myfont = pg.font.SysFont("public-sans", 50)
-    sound = myfont.render("SOUND", 1, (255,255,0))
-    screen.blit(sound, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
-    soundOn = pg.image.load('venv/Chess/images/on.png')
-    soundOff = pg.image.load('venv/Chess/images/off.png')
-    soundOn = pg.transform.scale(soundOn, (325, 50))
-    soundOff = pg.transform.scale(soundOff, (325, 50))
-    screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
-
-
-    klicked_SQ = ()
-    klick_PL = []
-    while running:
-    
-        for EVENT in pg.event.get(): 
-            if EVENT.type == pg.QUIT: 
-                running = False
-
-            #key down
-            # here i am just making sure that we handle mouse events (moving pieces etc) 
-
-            elif EVENT.type == pg.MOUSEBUTTONDOWN: 
-
-                #Button Operations
-                posb = pg.mouse.get_pos()
-                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                    gs.undoMove()
-                    screen.blit(wood_img, [0, 0])
-                    gs.drawZombies(screen,PIECES)
-                    
-                if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
-                    gs.__init__()
-                    root.__init__('e4')
-                    screen.blit(wood_img, [0, 0])
-                    continue
-                if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 155 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                    running = False
-
-                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 + 70 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 70 + 50:
-                    print('CASTLE-ME')
-
-                if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 + 140 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 140 + 50:
-                    screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
-                    val = 1            
-                    gs.soundval(val)
-
-                if WIDTH//100 + 340 <= posb[0] <= WIDTH//100 + 340 + 155 and HEIGHT-HEIGHT//2.5 + 140 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 140 + 50:
-                    screen.blit(soundOff, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))             
-                    val = 0
-                    gs.soundval(val)
-
-                #Translating pixel to row,col coord
-                pos = pg.mouse.get_pos()
-                col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE
-                coordinateRowColumn = [row,col]  
-                piece = gs.getPiece(coordinateRowColumn)
-
-
-
-                # base case invalid move, if invalid resets klick lists
-                if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
-                    klicked_SQ = ()                                 # clears clicked values
-                    klick_PL = []
-                
-                else:
-
-                    klicked_SQ = (row, col)
-                    klick_PL.append(klicked_SQ)
-                    print(klick_PL)
-
-                # while len(klick_PL)==1: 
-                #     #identify the move clicked create a potential move pMove()
-                #     if EVENT.type == pg.KEYDOWN: 
-                #         if EVENT.key == pg.K_e: #e for escape 
-                #             klicked_SQ = ()
-                #             klick_PL = []
-                #             print(klick_PL)
-
-                #     #add the show recommendation
-                #     # print(move.getGraph())
-
-
-                if len(klick_PL) == 2:
-                    move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    
-                    # blitMove(screen,move)
-                    root.movesMadeTree(root, move)
-                    gs.makeMove(move)
-                    
-                    if len(gs.Zombies) != 0:
-                        gs.drawZombies(screen, PIECES)
-                    
-
-                    # if z in zombies.
-
-
-                    klicked_SQ = () 
-                    klick_PL = []
-
-            posbut = pg.mouse.get_pos()
-            undoButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            resetButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
-            screen.blit(sound, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
-            if val == 0:
-                screen.blit(soundOff, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
-            elif val == 1:
-                screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
-
-
-            #elif EVENT.type == pg.KEYDOWN:
-                #if EVENT.key ==  pg.K_u: #u for undo
-                    #gs.undoMove()    
-
-
-        drawGS(screen, gs)
-        clock.tick(MAX_FPS)
-        pg.display.flip()
+class GameState():
+    def __init__(self):
+        # so far a 2d matrix 
         
-        pg.display.update()
+        self.BOARD = [
+            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+        ]
+
+        self.whiteMove = True
+
+        self.movehistory = [] # implementation of a stack :) this can be used to undo a move 
+                                #if we undo a move there actually needs to be an implementation of some 
+                                #rules...movehistory, versus backtracking? does it count as a move? 
+        self.Zombies = []
+    def drawZombies(self, screen, dict):
+      wp = 0
+      bp = 0 
+      for zombie in self.Zombies: 
+          
+          if zombie[0] == "w": 
+              screen.blit(dict[zombie][1],(530, 50+wp))
+              wp += 45
+          if zombie[0] == "b":
+              screen.blit(dict[zombie][1],(640, 50+bp))
+              bp += 45
+          
+
+    def getPiece(self,pos):
+        if pos[0] >= 8 or pos[1] >= 8:
+            return
+        else:
+            return self.BOARD[pos[0]][pos[1]]
+
+    def soundval(self, val):
+        global sv
+        sv = val
+        if sv == 1:
+            playsound('venv/Chess/sound/move.wav') 
+        elif sv == 0:
+            pass
+
+    def sound(self):
+        playsound('venv/Chess/sound/move.wav')    
+    # this function exectutes basic moves 
+    # there are several exception cases which we will address with separate functions
+
+    def makeMove(self, move): 
+        if self.BOARD[move.endRow][move.endCol] != '--':
+            self.Zombies.append(self.BOARD[move.endRow][move.endCol])
+            print("Captured Pieces:",self.Zombies)
+        if self.BOARD[move.startRow][move.startCol]  == "--": #check to make sure an empty square cant remove a peice
+            return # if true program continues without making changes
+        self.BOARD[move.startRow][move.startCol]  = "--"
+        self.BOARD[move.endRow][move.endCol] = move.PieceMoved
+        self.movehistory.append(move) # for an undo move, just pop 
+        self.whiteMove = not self.whiteMove
+        if sv is not None:
+            if sv==1:
+                self.sound()
+            else:
+                pass
+        else:
+            pass
+        
+
+    #including an undo function
+
+    def undoMove(self):
+        if len(self.movehistory) == 0:
+            return # makes sure program doesnt crash if undo button is pressed and move history is empty
+        else:
+            if len(self.Zombies) != 0:
+              self.Zombies.pop()
+            umove = self.movehistory.pop()
+            self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
+            self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
+            #TreeNode.remove(root,root,umove.getNotationBackwards())
+            self.whiteMove = not self.whiteMove
+            if sv is not None:
+                if sv==1:
+                    self.sound()
+                else:
+                    pass
+            else:
+                pass
+            
+
+    def ValidMoves(): 
+        pass
+
+
+    #creating recommendation system using adjacency list and graphs
+    
+    def getGraph(self, move, library):
+        piece = self.BOARD[move.startRow][move.StartCol]
+        if piece == "bN":                                                                  
+            pass
+            #for all node in all possible nodes that the knight can reach in one node
+            #tempgraphforknight.add_vertex(node)
+            #for node in all possiblenodes()
+            # w = weight of each destination node extracted from the dictionary
+            #tempgraphadd_edge(piece_node, node, w) 
+            # 
+            # 
+
+            #calculate shortest path node
+            #
+
+        if piece == "bK":
+            pass
+            #same implementation as above except generate a different legal moves function for different pieces
+    
 
 
 
-#within the driver code we have functions which help us manage the graphics of the game 
+class pMove(): 
+     # switching to true row and column notation with dictionaries 
+
+    num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
+    row_2_num = {v: k for k, v in num_2_row.items()}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
+    col_2_lett = {v: k for k, v in lett_2_col.items()}
+   
+    def __init__(self,start, BOARD): 
+        self.pstartRow = start[0]
+        self.pstartCol = start[1]
+
+    # this class will handle cases which happen before a player makes a move 
+    
+    def getGenLegalMov(self, matrix_dim):
+        if self.pstartRow >= 0 and self.pstartRow < matrix_dim:
+            return True
+        else:
+            return False
 
 
-                
+    def getLegMoveKnight(self):
+        MATRIX_DIM = 8 
+        self.possibleMoves = []
+        moveLim = [(-1,-2),(-1,2),(-2,-1),(-2,1), (1,-2),( 1,2),( 2,-1),( 2,1)]
+
+        for dif in moveLim:
+            self.pstartRow = self.pstartRow + moveLim[0]
+            self.pstartCol = self.pstartCol + moveLim[1]
+
+            if self.getGenLegalMov(self.pstartRow, MATRIX_DIM) and self.getGenLegalMov(self.pstartCol, MATRIX_DIM):
+                self.possibleMoves.append((self.pstartRow, self.pstartCol))
+            
+        return self.possibleMoves
+
+
+    #     # we created a function that checks if the move is on the baord 
+
+    #     pass
+
+    # def getLegMoveKing(self): 
+    #     pass
+
+    # def getLegMoveQueen(self): 
+    #     pass
+
+    # def getLegMoveBishop(self): 
+    #     pass
+
+    # def getLegMovePawn(self): 
+    #     pass
+
+    # def getLegMovePawn(self): 
+    #     #use heap for the double move
 
 
 
 
-# if __name__ == "__main__": 
+class Move():
+     # switching to true row and column notation with dictionaries 
 
-main()
+    num_2_row = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
+    row_2_num = {v: k for k, v in num_2_row.items()}
+    lett_2_col = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
+    col_2_lett = {v: k for k, v in lett_2_col.items()}
+   
+    def __init__(self,start, end, BOARD): 
+        self.startRow = start[0]
+        self.startCol = start[1]
+        self.endRow = end[0]
+        self.endCol = end[1]
+        self.PieceMoved = BOARD[self.startRow][self.startCol]
+        self.PieceDed = BOARD[self.endRow][self.endCol]
+
+    def getNotationFull(self):
+        return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
+    
+    def getNotationBackwards(self):
+        return self.get_lett(self.endRow, self.endCol) + self.get_lett(self.startRow, self.startCol)
+
+    def getNotationStart(self): 
+        return self.get_lett(self.startRow, self.startCol)
+
+    def strNotation(self): 
+        return (self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode())
+    
+    def get_lett(self, row, col): 
+        return self.col_2_lett[col] + self.row_2_num[row]
+
+
+
+    
+
+      
+class TreeNode:
+  def __init__(self, value):
+    self.value = value
+    self.left_child = None
+    self.right_child = None
+
+  def print_tree(self,node, level=0):
+    if node:
+      self.print_tree(node.right_child, level + 1)
+      print(' ' * 4 * level + '->', node.value)
+      self.print_tree(node.left_child, level + 1)
+
+  def insert(self,root,value):
+    if root is None: # We cannot insert on an empty root. The root should exist first.
+      return
+    parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
+    node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
+    new_node = TreeNode(value) # Our new node to be inserted.
+    while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
+      parent = node
+      if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
+        node = node.left_child
+      else: # Otherwise continue through the right subtree.
+        node = node.right_child
+    # We have found the parent of our new node:
+    if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
+      parent.left_child = new_node
+    else: # Otherwise, insert the new node at the right of the `parent`
+      parent.right_child = new_node
+
+  def rcsearch(self,node,value):
+    if not node:
+      return
+    if node.value == value:
+      return node
+    if node.value > value:
+      return self.rcsearch(node.left_child, value)
+    else:
+      return self.rcsearch(node.right_child, value)
+
+  def movesMadeTree(self,root, move):
+    move_text = move.getNotationFull()
+    self.insert(root, move_text)
+    self.print_tree(root)
+
+  def minValue(self,node):
+          n = node
+          while(n.left_child is not None): 
+            n = n.left_child
+          return n
+  
+  def remove(self,root, value):
+    if root is not None: 
+      return root # base case 
+
+    # the following two cases evalue wether the node to be removed 
+    #  is found on the left or right of the tree
+    if value < root.value: 
+      root.left_child = self.remove(root.left_child, value)
+
+    elif(value > root.value): 
+      root.right_child = self.remove(root.right_child, value)
+
+    else:
+      # the following to cases are meant to account for a missing node 
+      #effectively when a root has one or zero children
+      if root.left_child is None: 
+        t = root.right_child
+        root = None
+        return t
+
+      if root.right_child is None: 
+        t = root.left_child
+        root = None
+        return t
+
+      t = self.minValue(root.right_child)
+      root.value = t.value
+
+      root.right_child = self.remove(root.right_child, t.value)
+      self.print_tree(root)
+
+
+
+
+class button():
+        
+        #colours for button and text
+ 
+        button_col = (255, 255, 255)
+        hover_col = (75, 225, 255)
+        click_col = (50, 150, 255)
+        text_col = (0,0,0)
+        width = 150
+        height = 50
+        WIDTH = 750
+        HEIGHT = 900
+        BLACK = (0, 0, 0)
+        WHITE = (255, 255, 255)
+        GREEN = (0, 102, 0)
+
+        def __init__(self, x, y, text,screen):
+            self.x = x
+            self.y = y
+            self.text = text
+            self.screen = screen
+            WIDTH = 750
+            HEIGHT = 900
+            BLACK = (0, 0, 0)
+            WHITE = (255, 255, 255)
+            GREEN = (0, 102, 0)
+            self.BLACK = BLACK
+            self.WHITE = WHITE
+            self.GREEN = GREEN
+            self.HEIGHT = HEIGHT
+            self.WIDTH = WIDTH
+
+        def draw_button(self):
+
+            global clicked
+            action = False
+            clicked = False
+            font = pg.font.SysFont('Constantia', 20)
+            #get mouse position
+            #pos = pg.mouse.get_pos()
+
+            #create pygame Rect object for the button
+            button_rect = Rect(self.x, self.y, self.width, self.height)
+            
+            #check mouseover and clicked conditions
+            
+            pg.draw.rect(self.screen, self.button_col, button_rect)
+            
+            #add shading to button
+            pg.draw.line(self.screen, self.BLACK, (self.x, self.y + self.height), (self.x + self.width, self.y + self.height), 2)
+            pg.draw.line(self.screen, self.BLACK, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
+
+            #add text to button
+            text_img = font.render(self.text, True, self.text_col)
+            text_len = text_img.get_width()
+            self.screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 18))
+            return action
+
+        def buttonColorManage(self,pos,undoButton,resetButton,quitButton,castleButton):
+                if self.WIDTH //100 <= pos[0] <= self.WIDTH//100 + 150 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 50:
+                    undoButton.button_col = (self.GREEN)
+                    resetButton.button_col = (self.WHITE)
+                    resetButton.draw_button()
+                    quitButton.button_col = (self.WHITE)
+                    quitButton.draw_button()
+                    castleButton.button_col = (self.WHITE)
+                    castleButton.draw_button()
+                    undoButton.draw_button()
+
+                elif self.WIDTH//100+170 <= pos[0] <= self.WIDTH//100+170 + 150 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <=self.HEIGHT-self.HEIGHT//2.5 + 50:
+                    resetButton.button_col = (self.GREEN)
+                    undoButton.button_col = (self.WHITE)
+                    undoButton.draw_button()
+                    quitButton.button_col = (self.WHITE)
+                    quitButton.draw_button()
+                    castleButton.button_col = (self.WHITE)
+                    castleButton.draw_button()
+                    resetButton.draw_button()
+
+                elif self.WIDTH//100+340 <= pos[0] <= self.WIDTH//100+340 + 155 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 50:
+                    quitButton.button_col = (self.GREEN)
+                    undoButton.button_col = (self.WHITE)
+                    undoButton.draw_button()
+                    resetButton.button_col = (self.WHITE)
+                    resetButton.draw_button()
+                    castleButton.button_col = (self.WHITE)
+                    castleButton.draw_button()
+                    quitButton.draw_button()
+
+                elif self.WIDTH//100 <= pos[0] <= self.WIDTH//100 + 150 and self.HEIGHT-self.HEIGHT//2.5 + 70 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 70 + 50:
+                    castleButton.button_col = (self.GREEN)
+                    undoButton.button_col = (self.WHITE)
+                    undoButton.draw_button()
+                    resetButton.button_col = (self.WHITE)
+                    resetButton.draw_button()
+                    quitButton.button_col = (self.WHITE)
+                    quitButton.draw_button()
+                    castleButton.draw_button()
+
+                else:
+                    undoButton.button_col = (self.WHITE)
+                    undoButton.draw_button()
+                    resetButton.button_col = (self.WHITE)
+                    resetButton.draw_button()
+                    quitButton.button_col = (self.WHITE)
+                    quitButton.draw_button()
+                    castleButton.button_col = (self.WHITE)
+                    castleButton.draw_button()
