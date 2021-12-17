@@ -1,8 +1,8 @@
 #imported libraries
 
-from zanechessgame_engine import TreeNode as t 
+from chessgame_engine import TreeNode as t 
 import pygame as pg
-import zanechessgame_engine as Engine
+import chessgame_engine as Engine
 from pygame.locals import *
 import time
 
@@ -29,8 +29,8 @@ ZSQ_SIZE = 240 // MATRIX_DIM
 # ---Colors---
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 102, 0)
-BROWN = (51, 0, 102)
+GREEN = (0,102,0)
+BROWN = (87,51,9)
 
 # ---Images---
 font_obj = pg.font.Font('freesansbold.ttf', 32)
@@ -140,11 +140,11 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.init()
     icon = pg.image.load( "venv/Chess/images/bQ.png")
+    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
     pg.display.set_caption('Chess')
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
-
-
+    screen.blit(wood_img, [0, 0])
     #button class 
     
             
@@ -155,10 +155,10 @@ def main():
 
     # debug 
     print(PIECES)
-
+    
     # ---including engine---
     gs =  Engine.GameState()
-    screen.fill(BROWN)
+   
     
     drawGS(screen,gs)
     running = True 
@@ -236,9 +236,9 @@ def main():
 
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    
                     print(move.getNotationStart())
                     # blitMove(screen,move)
+                    
                     movesMadeTree(root, move)
                     gs.makeMove(move)
                     
