@@ -1,6 +1,5 @@
 #imported libraries
 
-from tkinter.constants import S
 from zanechessgame_engine import TreeNode as t 
 import pygame as pg
 import zanechessgame_engine as Engine
@@ -16,7 +15,7 @@ pg.init()
 # ---Window---
 
 WIDTH = 750
-HEIGHT = 500
+HEIGHT = 900
 MAX_FPS = 15
 
 
@@ -56,9 +55,22 @@ def load_images():
     pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
     for piece in pieces: 
         imagepiece = pg.transform.scale(pg.image.load( "venv/Chess/images/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-        case = {piece:  imagepiece}
+        if piece[1] == "P":
+            case = {piece: (6,imagepiece)}
+        if piece[1] == "B":
+            case = {piece: (5,imagepiece)}
+        if piece[1] == "N":
+            case = {piece: (4,imagepiece)}
+        if piece[1] == "R":
+            case = {piece: (3,imagepiece)}
+        if piece[1] == "Q":
+            case = {piece: (2,imagepiece)}
+        if piece[1] == "K":
+            case = {piece: (1,imagepiece)}
         PIECES.update(case)
-
+    print(PIECES)
+    
+#include hashtable 
 
 
 
@@ -80,33 +92,23 @@ def drawPieces(screen,BOARD, SQ_SIZE):
         for square in range(MATRIX_DIM):
             piece = BOARD[row][square]
             if piece != "--":
-                screen.blit(PIECES[piece], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 
 
-def drawZombies(screen,BOARD,zedList):
-    for piece in range(len(zedList)):
-            if len(zedList) != 0 and piece in zedList and piece != "--":
-                if piece[0] == 'w':
-                    screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
-                else:
-                    screen.blit(PIECES[piece], pg.Rect(540, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
-            else:
-                pass
 
 
-# def blitMove(screen,move): 
-#     text = move.strNotation
-#     on = True
-#     while on == True: 
-#         text = font_obj.render(u"text", True,WHITE)
-#         textrect = text.get_rect()
-#         textrect.center = (500, 250)
-#         screen.blit(text,textrect)
+def blitMove(screen,move): 
+    text = move.strNotation()
+    on = True
+    while on == True: 
+         text = font_obj.render(text, True,WHITE)
+         textrect = text.get_rect()
+         textrect.center = (500, 250)
+         screen.blit(text,textrect)
     
-#     time.sleep(1)
-#     on = False
-
+    time.sleep(1)
+    on = False
 
 
 def movesMadeTree(root, move):
@@ -114,7 +116,16 @@ def movesMadeTree(root, move):
     Engine.insert(root, move_text)
     Engine.print_tree(root)
 
-
+def castling(bool, move, root): 
+    #obtain a boolean from a button
+    castling_req = False
+    if castling_req is True:
+        king = move.BOARD[move.startRow][move.startCol]
+        rook = move.BOARD[move.endRow][move.endCol]
+        a  = root.search(king)
+        b = root.search(rook)
+        if a and b == None: 
+            pass #do the castling 
 
 
 #button class 
@@ -125,7 +136,7 @@ def movesMadeTree(root, move):
 
 def main():
     
-   
+
     # --- setup ---
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.init()
@@ -135,19 +146,16 @@ def main():
     clock = pg.time.Clock()
 
 
-
-
     #button class 
     class button():
         
         #colours for button and text
         
-        
         button_col = (255, 255, 255)
         hover_col = (75, 225, 255)
         click_col = (50, 150, 255)
         text_col = (0,0,0)
-        width = 80
+        width = 150
         height = 50
         
 
@@ -184,21 +192,21 @@ def main():
 
 
     def buttonColorManage(pos):
-            if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 80 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+            if WIDTH//100 <= pos[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= pos[1] <= HEIGHT-HEIGHT//2.5 + 50:
                 undoButton.button_col = (GREEN)
                 resetButton.button_col = (WHITE)
                 resetButton.draw_button()
                 quitButton.button_col = (WHITE)
                 quitButton.draw_button()
                 undoButton.draw_button()
-            elif WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+            elif WIDTH//100+170 <= pos[0] <= WIDTH//100+170 + 150 and HEIGHT-HEIGHT//2.5 <= pos[1] <=HEIGHT-HEIGHT//2.5 + 50:
                 resetButton.button_col = (GREEN)
                 undoButton.button_col = (WHITE)
                 undoButton.draw_button()
                 quitButton.button_col = (WHITE)
                 quitButton.draw_button()
                 resetButton.draw_button()
-            elif WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
+            elif WIDTH//100+340 <= pos[0] <= WIDTH//100+340 + 215 and HEIGHT-HEIGHT//2.5 <= pos[1] <= HEIGHT-HEIGHT//2.5 + 50:
                 quitButton.button_col = (GREEN)
                 undoButton.button_col = (WHITE)
                 undoButton.draw_button()
@@ -223,16 +231,15 @@ def main():
 
     # ---including engine---
     gs =  Engine.GameState()
-    zoms = Engine.Zombies()
     screen.fill(BROWN)
     
     drawGS(screen,gs)
     running = True 
-    print(HEIGHT//100)
-    print(WIDTH-WIDTH//3)
-    undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
-    resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
-    quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
+    print(HEIGHT-HEIGHT//2.5)
+    print(WIDTH//100)
+    undoButton = button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO')
+    resetButton = button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET')
+    quitButton = button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT')
     quitButton.draw_button()
     resetButton.draw_button()
     undoButton.draw_button()
@@ -245,25 +252,22 @@ def main():
             if EVENT.type == pg.QUIT: 
                 running = False
 
-
-
-
             #key down
-
-          
-
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
                 #Button Operations
                 posb = pg.mouse.get_pos()
-                if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
+                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     gs.undoMove()
-                if WIDTH-WIDTH//3+85 <= posb[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
+                    screen.fill(BROWN)
+                    gs.drawZombies(screen,PIECES)
+                if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
                     gs.__init__()
+                    screen.fill(BROWN)
                     continue
-                if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
+                if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     running = False
 
 
@@ -272,6 +276,8 @@ def main():
                 col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE
                 coordinateRowColumn = [row,col]  
                 piece = gs.getPiece(coordinateRowColumn)
+
+
                 print(piece)
 
                 # base case invalid move, if invalid resets klick lists
@@ -304,9 +310,13 @@ def main():
                     # blitMove(screen,move)
                     movesMadeTree(root, move)
                     gs.makeMove(move)
-                    if len(gs.Zombies) != 0: 
-                        drawZombies(screen,zoms.whiteZombies,gs.Zombies)
-                        drawZombies(screen,zoms.blackZombies,gs.Zombies)
+                    
+                    if len(gs.Zombies) != 0:
+                        gs.drawZombies(screen, PIECES)
+                    
+
+                    # if z in zombies.
+
 
                     klicked_SQ = () 
                     klick_PL = []

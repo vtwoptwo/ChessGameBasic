@@ -25,9 +25,15 @@ class WGraph:
 
 class Zombies(): 
     def __init__(self): 
-        self.whiteZombies = ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR","wP"]
+        self.whiteZombies = [
+            ["wP""wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+        ]
 
-        self.blackZombies = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR","bP"]
+        self.blackZombies = [
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ]
 
 
 class GameState():
@@ -51,7 +57,18 @@ class GameState():
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
         self.Zombies = []
-    
+    def drawZombies(self, screen, dict):
+      wp = 0
+      bp = 0 
+      for zombie in self.Zombies: 
+          if zombie[0] == "w": 
+              screen.blit(dict[zombie][1],(500, 100+wp))
+              wp += 45
+          if zombie[0] == "b":
+              screen.blit(dict[zombie][1],(600, 100+bp))
+              bp += 45
+          
+
     def getPiece(self,pos):
         if pos[0] >= 8 or pos[1] >= 8:
             return
@@ -81,6 +98,8 @@ class GameState():
         if len(self.movehistory) == 0:
             return # makes sure program doesnt crash if undo button is pressed and move history is empty
         else:
+            if len(self.Zombies) != 0:
+              self.Zombies.pop()
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
@@ -93,10 +112,9 @@ class GameState():
 
     #creating recommendation system using adjacency list and graphs
     
-    def getGraph(self, move):
+    def getGraph(self, move, library):
         piece = self.BOARD[move.startRow][move.StartCol]
-        value_of_piece = None
-        if piece == "bN":
+        if piece == "bN":                                                                  
             pass
             #for all node in all possible nodes that the knight can reach in one node
             #tempgraphforknight.add_vertex(node)
@@ -194,13 +212,14 @@ class Move():
         return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
 
     def getNotationStart(self): 
-        return str(self.get_lett(self.startRow, self.startCol))
+        return self.get_lett(self.startRow, self.startCol)
 
     def strNotation(self): 
         return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
     
     def get_lett(self, row, col): 
         return self.col_2_lett[col] + self.row_2_num[row]
+
 
 
     
