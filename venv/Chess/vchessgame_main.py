@@ -1,5 +1,6 @@
 #imported libraries
-from vchessgame_engine import Tree 
+
+from vchessgame_engine import TreeNode as t 
 import pygame as pg
 import vchessgame_engine as Engine
 from pygame.locals import *
@@ -17,8 +18,6 @@ WIDTH = 750
 HEIGHT = 900
 MAX_FPS = 15
 
-root = Tree("e4")
-
 
 # ---Game---
 
@@ -30,8 +29,8 @@ ZSQ_SIZE = 240 // MATRIX_DIM
 # ---Colors---
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GREEN = (0, 102, 0)
-BROWN = (51, 0, 102)
+GREEN = (0,102,0)
+BROWN = (87,51,9)
 
 # ---Images---
 font_obj = pg.font.Font('freesansbold.ttf', 32)
@@ -44,6 +43,12 @@ PIECES= {}
 
 
     
+# add a value to each piece in the dictionary: 
+def addPieceValue(): 
+    pass
+    #here i am trying to add another value to each key which indicates the vallue fo each peice. 
+    #this is crucial in terms of being able to map out the
+    #weight of the edges later on with the recommendation system 
 
 # loading images function 
 def load_images(): 
@@ -106,10 +111,10 @@ def blitMove(screen,move):
     on = False
 
 
-def movesMadeTree( r, move):
+def movesMadeTree(root, move):
     move_text = move.getNotationFull()
-    root.insert(r, move_text)
-    root.print_tree(r)
+    Engine.insert(root, move_text)
+    Engine.print_tree(root)
 
 def castling(bool, move, root): 
     #obtain a boolean from a button
@@ -123,7 +128,6 @@ def castling(bool, move, root):
             pass #do the castling 
 
 
-#button class 
 
 # --- piece class ---
 
@@ -136,107 +140,38 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.init()
     icon = pg.image.load( "venv/Chess/images/bQ.png")
+    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
     pg.display.set_caption('Chess')
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
-
-
+    screen.blit(wood_img, [0, 0])
     #button class 
-    class button():
-        
-        #colours for button and text
-        
-        button_col = (255, 255, 255)
-        hover_col = (75, 225, 255)
-        click_col = (50, 150, 255)
-        text_col = (0,0,0)
-        width = 80
-        height = 50
-        
-
-        def __init__(self, x, y, text):
-            self.x = x
-            self.y = y
-            self.text = text
-
-        def draw_button(self):
-
-            global clicked
-            action = False
-            clicked = False
-            font = pg.font.SysFont('Constantia', 20)
-            #get mouse position
-            #pos = pg.mouse.get_pos()
-
-            #create pygame Rect object for the button
-            button_rect = Rect(self.x, self.y, self.width, self.height)
-            
-            #check mouseover and clicked conditions
-            
-            pg.draw.rect(screen, self.button_col, button_rect)
-            
-            #add shading to button
-            pg.draw.line(screen, BLACK, (self.x, self.y + self.height), (self.x + self.width, self.y + self.height), 2)
-            pg.draw.line(screen, BLACK, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
-
-            #add text to button
-            text_img = font.render(self.text, True, self.text_col)
-            text_len = text_img.get_width()
-            screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 18))
-            return action
-
-
-    def buttonColorManage(pos):
-            if WIDTH-WIDTH//3 <= pos[0] <= WIDTH-WIDTH//3 + 80 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
-                undoButton.button_col = (GREEN)
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
-                undoButton.draw_button()
-            elif WIDTH-WIDTH//3+85 <= pos[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
-                resetButton.button_col = (GREEN)
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
-                resetButton.draw_button()
-            elif WIDTH-WIDTH//3+170 <= pos[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= pos[1] <= HEIGHT//100 + 50:
-                quitButton.button_col = (GREEN)
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.draw_button()
-            else:
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
+    
             
 
     #drawing on the screen 
     load_images()
+    root = Engine.TreeNode("e4")
 
     # debug 
     print(PIECES)
-
+    
     # ---including engine---
     gs =  Engine.GameState()
-    screen.fill(BROWN)
+   
     
     drawGS(screen,gs)
     running = True 
-    print(HEIGHT//100)
-    print(WIDTH-WIDTH//3)
-    undoButton = button(WIDTH-WIDTH//3,HEIGHT//100,'UNDO')
-    resetButton = button(WIDTH-WIDTH//3+85,HEIGHT//100,'RESET')
-    quitButton = button(WIDTH-WIDTH//3+170,HEIGHT//100,'QUIT')
+    print(HEIGHT-HEIGHT//2.5)
+    print(WIDTH//100)
+    undoButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO',screen)
+    resetButton = Engine.button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET',screen)
+    quitButton = Engine.button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT',screen)
+    castleButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5 + 70, 'CASTLE-ME',screen)
     quitButton.draw_button()
     resetButton.draw_button()
     undoButton.draw_button()
+    castleButton.draw_button()
 
     klicked_SQ = ()
     klick_PL = []
@@ -250,16 +185,22 @@ def main():
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
+
                 #Button Operations
                 posb = pg.mouse.get_pos()
-                if WIDTH-WIDTH//3 <= posb[0] <= WIDTH-WIDTH//3 + 100 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
-                    gs.undoMove(movesMadeTree)
-                if WIDTH-WIDTH//3+85 <= posb[0] <= WIDTH-WIDTH//3 + 165 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
+                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
+                    gs.undoMove()
+                    screen.fill(BROWN)
+                    gs.drawZombies(screen,PIECES)
+                if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
                     gs.__init__()
+                    screen.fill(BROWN)
                     continue
-                if WIDTH-WIDTH//3+170 <= posb[0] <= WIDTH-WIDTH//3 + 250 and HEIGHT//100 <= posb[1] <= HEIGHT//100 + 50:
+                if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     running = False
 
+                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 + 70 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 70 + 50:
+                    print('CASTLE-ME')
 
                 #Translating pixel to row,col coord
                 pos = pg.mouse.get_pos()
@@ -295,9 +236,9 @@ def main():
 
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
-                    
                     print(move.getNotationStart())
                     # blitMove(screen,move)
+                    
                     movesMadeTree(root, move)
                     gs.makeMove(move)
                     
@@ -312,7 +253,10 @@ def main():
                     klick_PL = []
 
             posbut = pg.mouse.get_pos()
-            buttonColorManage(posbut)
+            undoButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            resetButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
