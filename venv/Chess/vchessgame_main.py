@@ -168,7 +168,7 @@ def main():
     resetButton.draw_button()
     undoButton.draw_button()
     castleButton.draw_button()
-
+    gs.initialize_dicts(PIECES)
     klicked_SQ = ()
     klick_PL = []
     while running:
@@ -241,7 +241,10 @@ def main():
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
+                        screen.blit(wood_img, [0,0])
+                        gs.updateHeaps(PIECES)
                         gs.drawZombies(screen, PIECES)
+
                     
 
                     # if z in zombies.
