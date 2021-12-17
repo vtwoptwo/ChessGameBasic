@@ -5,12 +5,10 @@ HASHPIECESB = []
 
 def str_to_number(string):
   number = 0
-  # A string in python is just a list of characters, with extra functions built around. So we can iterate over it using the index of each character.
-  # We will use then the index of each character to compose the exponent to which we have to raise the base, 128, for each of them.
-  for i in range(len(string)): 
-    exponent = len(string) - 1 - i # Exponents start at len(string) - 1, and decrease one by one upt to 0.
-    asc = ord(string[i]) # Compute the ascii number corresponding to that character at position i.
-    number += asc * (128**exponent) # Calculate the base-128 for this character at position i, and accumulate it in number
+  for i in range(len(string)):
+    exponent = len(string) - 1 - i
+    asc = ord(string[i]) 
+    number += asc * (128**exponent)
   return number
 
 
