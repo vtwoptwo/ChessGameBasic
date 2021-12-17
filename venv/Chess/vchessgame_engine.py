@@ -62,10 +62,10 @@ class GameState():
       bp = 0 
       for zombie in self.Zombies: 
           if zombie[0] == "w": 
-              screen.blit(dict[zombie][1],(500, 100+wp))
+              screen.blit(dict[zombie][1],(530, 50+wp))
               wp += 45
           if zombie[0] == "b":
-              screen.blit(dict[zombie][1],(600, 100+bp))
+              screen.blit(dict[zombie][1],(640, 50+bp))
               bp += 45
           
 
@@ -94,7 +94,7 @@ class GameState():
 
     #including an undo function
 
-    def undoMove(self, root):
+    def undoMove(self):
         if len(self.movehistory) == 0:
             return # makes sure program doesnt crash if undo button is pressed and move history is empty
         else:
@@ -103,7 +103,6 @@ class GameState():
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
-            remove(root, umove.getNotationFull())
             self.whiteMove = not self.whiteMove
             
 
@@ -227,92 +226,50 @@ class Move():
 
         
 class TreeNode:
-  
   def __init__(self, value):
     self.value = value
     self.left_child = None
     self.right_child = None
 
+  def print_tree(self,node, level=0):
+    if node:
+      self.print_tree(node.right_child, level + 1)
+      print(' ' * 4 * level + '->', node.value)
+      self.print_tree(node.left_child, level + 1)
 
-def print_tree(node, level=0):
-  if node:
-    print_tree(node.right_child, level + 1)
-    print(' ' * 4 * level + '->', node.value)
-    print_tree(node.left_child, level + 1)
+  def insert(self,root,value):
+    if root is None: # We cannot insert on an empty root. The root should exist first.
+      return
+    parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
+    node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
+    new_node = TreeNode(value) # Our new node to be inserted.
+    while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
+      parent = node
+      if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
+        node = node.left_child
+      else: # Otherwise continue through the right subtree.
+        node = node.right_child
+    # We have found the parent of our new node:
+    if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
+      parent.left_child = new_node
+    else: # Otherwise, insert the new node at the right of the `parent`
+      parent.right_child = new_node
 
+  def rcsearch(self,node,value):
+    if not node:
+      return
+    if node.value == value:
+      return node
+    if node.value > value:
+      return self.rcsearch(node.left_child, value)
+    else:
+      return self.rcsearch(node.right_child, value)
 
-def minValue(node):
-  n = node
-  while(n.left_child is not None): 
-    n = n.left_child
-
-  return n
-
-def reset(node, level = 0 ): 
-  if node: 
-    remove(node.right_child, level + 1)
-    remove(4 * level, node.value)
-    remove(node.left_child, level + 1)
-
-
-
-def remove(root, value):
-  if root is not None: 
-    return root # base case 
-
-  # the following two cases evalue wether the node to be removed 
-  #  is found on the left or right of the tree
-  if value < root.value: 
-    root.left_child = remove(root.left_child, value)
-  
-  elif(value > root.value): 
-    root.right_child = remove(root.right_child, value)
-
-  else:
-    # the following to cases are meant to account for a missing node 
-    #effectively when a root has one or zero children
-    if root.left_child is None: 
-      t = root.right_child
-      root = None
-      return t
-
-    if root.right_child is None: 
-      t = root.left_child
-      root = None
-      return t
-
-    t = minValue(root.right_child)
-    root.value = t.value
-
-    root.right_child = remove(root.right_child, t.value)
-
-def insert(root, value):
-  if root is None: # We cannot insert on an empty root. The root should exist first.
-    return
-  parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
-  node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
-  new_node = TreeNode(value) # Our new node to be inserted.
-  while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
-    parent = node
-    if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
-      node = node.left_child
-    else: # Otherwise continue through the right subtree.
-      node = node.right_child
-  # We have found the parent of our new node:
-  if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
-    parent.left_child = new_node
-  else: # Otherwise, insert the new node at the right of the `parent`
-    parent.right_child = new_node
-
-def rcsearch(node, value):
-  if not node:
-    return
-  if node.value == value:
-    return node
-  if node.value > value:
-    return rcsearch(node.left_child, value)
-  else:
-    return rcsearch(node.right_child, value)
+  def movesMadeTree(self,root, move):
+    move_text = move.getNotationFull()
+    print("MOVES MADE:",root,move_text)
+    self.insert(root, move_text)
+    self.print_tree(root)
 
 class button():
         
