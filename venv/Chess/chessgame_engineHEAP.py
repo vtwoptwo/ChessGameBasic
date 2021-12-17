@@ -59,6 +59,8 @@ class GameState():
                   self.PIECESB.update(case)
       
     def updateHeaps(self,dict):
+          self.ZombiesWhite.__init__(16,max_heap)
+          self.ZombiesBlack.__init__(16,max_heap)
           for zombie in self.Zombies:
             number = dict[zombie][0]
             if zombie[0] == 'w':

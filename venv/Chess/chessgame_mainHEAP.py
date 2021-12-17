@@ -1,8 +1,8 @@
 #imported libraries
 
-from vchessgame_engine import TreeNode as t 
+from chessgame_engineHEAP import TreeNode as t 
 import pygame as pg
-import vchessgame_engine as Engine
+import chessgame_engineHEAP as Engine
 from pygame.locals import *
 import time
 
