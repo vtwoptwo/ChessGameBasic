@@ -21,7 +21,6 @@ class WGraph:
       print(f'{vertex} -> {edges}')
 
 
-
 class GameState():
     def __init__(self):
         # so far a 2d matrix
@@ -42,6 +41,7 @@ class GameState():
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
         self.Zombies = []
+        
     def drawZombies(self, screen, dict):
       wp = 0
       bp = 0 
