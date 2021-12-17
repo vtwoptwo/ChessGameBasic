@@ -17,8 +17,8 @@ class WGraph:
       a_edges.append((b, w)) # Add a tuple of two elements, bearing the target vertex and the weight of the edge.
   
   def print(self):
-    for vertex, edges in self.vertices.items():
-      print(f'{vertex} -> {edges}')
+     for vertex, edges in self.vertices.items():
+       print(f'{vertex} -> {edges}')
 
 
 
@@ -61,11 +61,12 @@ class GameState():
       wp = 0
       bp = 0 
       for zombie in self.Zombies: 
+          
           if zombie[0] == "w": 
-              screen.blit(dict[zombie][1],(500, 100+wp))
+              screen.blit(dict[zombie][1],(530, 50+wp))
               wp += 45
           if zombie[0] == "b":
-              screen.blit(dict[zombie][1],(600, 100+bp))
+              screen.blit(dict[zombie][1],(640, 50+bp))
               bp += 45
           
 
@@ -73,7 +74,6 @@ class GameState():
         if pos[0] >= 8 or pos[1] >= 8:
             return
         else:
-            print(pos)
             return self.BOARD[pos[0]][pos[1]]
     
     # this function exectutes basic moves 
@@ -103,6 +103,7 @@ class GameState():
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
+            #TreeNode.remove(root,root,umove.getNotationBackwards())
             self.whiteMove = not self.whiteMove
             
 
@@ -210,12 +211,15 @@ class Move():
 
     def getNotationFull(self):
         return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
+    
+    def getNotationBackwards(self):
+        return self.get_lett(self.endRow, self.endCol) + self.get_lett(self.startRow, self.startCol)
 
     def getNotationStart(self): 
         return self.get_lett(self.startRow, self.startCol)
 
     def strNotation(self): 
-        return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
+        return (self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode())
     
     def get_lett(self, row, col): 
         return self.col_2_lett[col] + self.row_2_num[row]
@@ -224,7 +228,7 @@ class Move():
 
     
 
-        
+      
 class TreeNode:
   def __init__(self, value):
     self.value = value
@@ -267,9 +271,48 @@ class TreeNode:
 
   def movesMadeTree(self,root, move):
     move_text = move.getNotationFull()
-    print("MOVES MADE:",root,move_text)
     self.insert(root, move_text)
     self.print_tree(root)
+
+  def minValue(self,node):
+          n = node
+          while(n.left_child is not None): 
+            n = n.left_child
+          return n
+  
+  def remove(self,root, value):
+    if root is not None: 
+      return root # base case 
+
+    # the following two cases evalue wether the node to be removed 
+    #  is found on the left or right of the tree
+    if value < root.value: 
+      root.left_child = self.remove(root.left_child, value)
+
+    elif(value > root.value): 
+      root.right_child = self.remove(root.right_child, value)
+
+    else:
+      # the following to cases are meant to account for a missing node 
+      #effectively when a root has one or zero children
+      if root.left_child is None: 
+        t = root.right_child
+        root = None
+        return t
+
+      if root.right_child is None: 
+        t = root.left_child
+        root = None
+        return t
+
+      t = self.minValue(root.right_child)
+      root.value = t.value
+
+      root.right_child = self.remove(root.right_child, t.value)
+      self.print_tree(root)
+
+
+
 
 class button():
         
