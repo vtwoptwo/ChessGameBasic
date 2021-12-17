@@ -26,7 +26,7 @@ class GameState():
     def __init__(self):
         # so far a 2d matrix
         self.BOARD = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+            ["bR", "bN", "bB", "bK", "bQ", "bB", "bN", "bR"],
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -74,6 +74,8 @@ class GameState():
         self.BOARD[move.endRow][move.endCol] = move.PieceMoved
         self.movehistory.append(move) # for an undo move, just pop 
         self.whiteMove = not self.whiteMove
+    
+    
 
         
 
@@ -260,12 +262,12 @@ class TreeNode:
       return self.rcsearch(node.right_child, value)
 
   def movesMadeTree(self,root, move):
-    move_text = move.getNotationFull()
+    move_text = move.getNotationStart()
     self.insert(root, move_text)
     self.print_tree(root)
   
   def movesUndoTree(self,root, move): 
-    umove_text = move.getNotationFull()
+    umove_text = move.getNotationStart()
     self.remove(root, umove_text)
     self.print_tree(root)
 
@@ -283,16 +285,14 @@ class TreeNode:
       node = node.left_child
     return node
 
-  def movesMadeTree(self,root, move):
-    move_text = move.getNotationFull()
-    self.insert(root, move_text)
-    self.print_tree(root)
 
   def minValue(self,node):
           n = node
           while(n.left_child is not None): 
             n = n.left_child
           return n
+  
+ 
   
   def remove(self,root, value):
      # Base Case

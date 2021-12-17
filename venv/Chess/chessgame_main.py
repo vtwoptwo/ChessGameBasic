@@ -1,8 +1,8 @@
 #imported libraries
 
-from chessgame_engine import TreeNode as t 
+from zanechessgame_engine import TreeNode as t 
 import pygame as pg
-import chessgame_engine as Engine
+import zanechessgame_engine as Engine
 from pygame.locals import *
 import time
 
@@ -93,9 +93,7 @@ def drawPieces(screen,BOARD, SQ_SIZE):
             piece = BOARD[row][square]
             if piece != "--":
                 screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
-
-
-
+        
 
 
 def blitMove(screen,move): 
@@ -113,16 +111,9 @@ def blitMove(screen,move):
 
 
 
-def castling(bool, move, root): 
-    #obtain a boolean from a button
-    castling_req = False
-    if castling_req is True:
-        king = move.BOARD[move.startRow][move.startCol]
-        rook = move.BOARD[move.endRow][move.endCol]
-        a  = root.search(king)
-        b = root.search(rook)
-        if a and b == None: 
-            pass #do the castling 
+def canCastle(tree,player):
+    if player == True:
+        tree.rcsearch
 
 
 
@@ -149,7 +140,8 @@ def main():
     #drawing on the screen 
     load_images()
     root = t('e4')
-
+    
+    
     # debug 
     print(PIECES)
 
@@ -199,6 +191,25 @@ def main():
 
                 if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 + 70 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 70 + 50:
                     print('CASTLE-ME')
+                    if gs.whiteMove:
+                        if root.rcsearch(root,'e1') is None and root.rcsearch(root,'h1') is None and root.rcsearch(root,'f1') is not None and root.rcsearch(root,'g1') is not None:
+                            Wking = Engine.Move((7,4), (7,6), gs.BOARD)
+                            gs.makeMove(Wking)
+                            Wrook = Engine.Move((7,7),(7,5), gs.BOARD)
+                            gs.makeMove(Wrook)
+                        else:
+                            print("Castle Not Allowed For White")
+                    else:
+                        if root.rcsearch(root,'d8') is None and root.rcsearch(root,'a8') is None and root.rcsearch(root,'b8') is not None and root.rcsearch(root,'c8') is not None:
+                            Bking = Engine.Move((0,3), (0,1), gs.BOARD)
+                            gs.makeMove(Bking)
+                            Brook = Engine.Move((0,0),(0,2),gs.BOARD)
+                            gs.makeMove(Brook)
+                        else:
+                            print("Castle Not Allowed For Black")
+
+
+
 
                 #Translating pixel to row,col coord
                 pos = pg.mouse.get_pos()
@@ -238,6 +249,7 @@ def main():
                     print(move.getNotationStart())
                     # blitMove(screen,move)
                     root.movesMadeTree(root, move)
+                    
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
