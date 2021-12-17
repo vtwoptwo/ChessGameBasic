@@ -13,14 +13,15 @@ import time
 pg.init()
 
 # ---Window---
-
+# Dimensions and FPS for our game
 WIDTH = 750
 HEIGHT = 900
 MAX_FPS = 15
 
 
 # ---Game---
-
+# Game Specifics: Matrix_Dim is our divisor for dividing our board into and 8x8
+# SQ_SIZE indicates the size of the squares
 MATRIX_DIM = 8 
 SQ_SIZE = 500 // MATRIX_DIM
 
@@ -41,16 +42,8 @@ PIECES= {}
 #implementation of a dictionary high space complexity low time complexity 
 #static
 
-
-    
-# add a value to each piece in the dictionary: 
-def addPieceValue(): 
-    pass
-    #here i am trying to add another value to each key which indicates the vallue fo each peice. 
-    #this is crucial in terms of being able to map out the
-    #weight of the edges later on with the recommendation system 
-
-# loading images function 
+# loading images function
+# This function fills the PIECES dictionary with a piece string and its associated image in a str:image format for each piece respectively
 def load_images(): 
     pieces = ["bR", "bN", "bB", "bQ", "bK", "wB", "wN", "wR","wQ", "wK", "bP", "bP", "wP" ]
     for piece in pieces: 
@@ -69,17 +62,16 @@ def load_images():
             case = {piece: (1,imagepiece)}
         PIECES.update(case)
     print(PIECES)
-    
+
 #include hashtable 
 
-
-
+#drawGS draws our gamestate and keeps up with the changes of our matrix in the engine
 def drawGS(screen,gs): 
     drawBoard(screen)
     drawPieces(screen,gs.BOARD, SQ_SIZE)
-    
-    
 
+    
+# Specifically handles board graphics and is a child function of drawGS
 def drawBoard(screen):
     colors = [WHITE, GREEN]
     for row in range(MATRIX_DIM):
@@ -87,6 +79,7 @@ def drawBoard(screen):
             color = colors[((row+square)%2)]
             pg.draw.rect(screen, color, pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
             
+# Specifically handles Piece graphics and is a child function of drawGS        
 def drawPieces(screen,BOARD, SQ_SIZE):
     for row in range(MATRIX_DIM):
         for square in range(MATRIX_DIM):
@@ -94,30 +87,6 @@ def drawPieces(screen,BOARD, SQ_SIZE):
             if piece != "--":
                 screen.blit(PIECES[piece][1], pg.Rect(square*SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
         
-
-
-def blitMove(screen,move): 
-    text = move.strNotation()
-    on = True
-    while on == True: 
-         text = font_obj.render(text, True,WHITE)
-         textrect = text.get_rect()
-         textrect.center = (500, 250)
-         screen.blit(text,textrect)
-    
-    time.sleep(1)
-    on = False
-
-
-
-
-def canCastle(tree,player):
-    if player == True:
-        tree.rcsearch
-
-
-
-# --- piece class ---
 
 #main driver code
 
@@ -130,52 +99,56 @@ def main():
     icon = pg.image.load( "venv/Chess/images/bQ.png")
     pg.display.set_caption('Chess')
     pg.display.set_icon(icon)   
-    clock = pg.time.Clock()
-    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
+    clock = pg.time.Clock() # important for restricting fram rate
+    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT)) #background image load
     screen.blit(wood_img, [0, 0])
-    #button class 
     
             
 
     #drawing on the screen 
     load_images()
+
+    #Initializes our binary search tree with a root of position e4
     root = t('e4')
-    
-    
-    # debug 
-    print(PIECES)
 
     # ---including engine---
     gs =  Engine.GameState()
     
-    drawGS(screen,gs)
-    running = True 
-    print(HEIGHT-HEIGHT//2.5)
-    print(WIDTH//100)
+    drawGS(screen,gs) # Calling drawGS
+    running = True #our main game loop boolean and is used to quit upon the click of the quit button
+
+    #Initializing Buttons
     undoButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO',screen)
     resetButton = Engine.button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET',screen)
     quitButton = Engine.button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT',screen)
     castleButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5 + 70, 'CASTLE-ME',screen)
+    #Displaying the Buttons
     quitButton.draw_button()
     resetButton.draw_button()
     undoButton.draw_button()
     castleButton.draw_button()
 
+    #Klicked_SQ will hold the pixel x,y of our mouse upon click
     klicked_SQ = ()
+    #Klicked_PL is a list of Klicked_SQ will help us manage peice movement
     klick_PL = []
+
+    #game loop
     while running:
-    
+        
+        # Allows us to quit when pygame receives a quit event
         for EVENT in pg.event.get(): 
             if EVENT.type == pg.QUIT: 
                 running = False
 
-            #key down
-            # here i am just making sure that we handle mouse events (moving pieces etc) 
-
+            #checks if event type is a mouse click if yes the code below will run
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
 
                 #Button Operations
+                #this posb gets the current position of our mouse upon click 
                 posb = pg.mouse.get_pos()
+
+                # the next 4 if statements are intervals of pixels that tell us which button we are missing
                 if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     gs.undoMove(root)
                     screen.blit(wood_img, [0, 0])
