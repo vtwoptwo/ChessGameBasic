@@ -231,39 +231,45 @@ class TreeNode:
     self.left_child = None
     self.right_child = None
 
-def print_tree(node, level=0):
-  if node:
-    print_tree(node.right_child, level + 1)
-    print(' ' * 4 * level + '->', node.value)
-    print_tree(node.left_child, level + 1)
+  def print_tree(self,node, level=0):
+    if node:
+      self.print_tree(node.right_child, level + 1)
+      print(' ' * 4 * level + '->', node.value)
+      self.print_tree(node.left_child, level + 1)
 
-def insert(root, value):
-  if root is None: # We cannot insert on an empty root. The root should exist first.
-    return
-  parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
-  node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
-  new_node = TreeNode(value) # Our new node to be inserted.
-  while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
-    parent = node
-    if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
-      node = node.left_child
-    else: # Otherwise continue through the right subtree.
-      node = node.right_child
-  # We have found the parent of our new node:
-  if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
-    parent.left_child = new_node
-  else: # Otherwise, insert the new node at the right of the `parent`
-    parent.right_child = new_node
+  def insert(self,root,value):
+    if root is None: # We cannot insert on an empty root. The root should exist first.
+      return
+    parent = None # We hold a pointer to the node that will be the parent of the new node we are inserting
+    node = root # Also, we hold a pointer to traverse all the way through the path in which our new node will be inserted
+    new_node = TreeNode(value) # Our new node to be inserted.
+    while node is not None: # Keep traversing down until node is None. When that condition is met, parent will hold a pointer to the immediate previous node visited by the `node` variable, and thus, it will be the node where to hang our new node.
+      parent = node
+      if node.value > value: # If the value of the visited node is larger than our new value, then we should continue through the left subtree.
+        node = node.left_child
+      else: # Otherwise continue through the right subtree.
+        node = node.right_child
+    # We have found the parent of our new node:
+    if parent.value > value: # If the value of the parent is larger than the new value, insert the new node at the left of `parent`
+      parent.left_child = new_node
+    else: # Otherwise, insert the new node at the right of the `parent`
+      parent.right_child = new_node
 
-def rcsearch(node, value):
-  if not node:
-    return
-  if node.value == value:
-    return node
-  if node.value > value:
-    return rcsearch(node.left_child, value)
-  else:
-    return rcsearch(node.right_child, value)
+  def rcsearch(self,node,value):
+    if not node:
+      return
+    if node.value == value:
+      return node
+    if node.value > value:
+      return self.rcsearch(node.left_child, value)
+    else:
+      return self.rcsearch(node.right_child, value)
+
+  def movesMadeTree(self,root, move):
+    move_text = move.getNotationFull()
+    print("MOVES MADE:",root,move_text)
+    self.insert(root, move_text)
+    self.print_tree(root)
 
 class button():
         
