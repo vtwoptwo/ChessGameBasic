@@ -111,10 +111,7 @@ def blitMove(screen,move):
     on = False
 
 
-def movesMadeTree(root, move):
-    move_text = move.getNotationFull()
-    Engine.insert(root, move_text)
-    Engine.print_tree(root)
+
 
 def castling(bool, move, root): 
     #obtain a boolean from a button
@@ -143,22 +140,21 @@ def main():
     pg.display.set_caption('Chess')
     pg.display.set_icon(icon)   
     clock = pg.time.Clock()
-
-
+    wood_img = pg.transform.scale(pg.image.load("venv/Chess/images/wood.jpg"),(WIDTH, HEIGHT))
+    screen.blit(wood_img, [0, 0])
     #button class 
     
             
 
     #drawing on the screen 
     load_images()
-    root = Engine.TreeNode("e4")
+    root = t('e4')
 
     # debug 
     print(PIECES)
 
     # ---including engine---
     gs =  Engine.GameState()
-    screen.fill(BROWN)
     
     drawGS(screen,gs)
     running = True 
@@ -190,11 +186,11 @@ def main():
                 posb = pg.mouse.get_pos()
                 if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     gs.undoMove()
-                    screen.fill(BROWN)
+                    screen.blit(wood_img, [0, 0])
                     gs.drawZombies(screen,PIECES)
                 if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
                     gs.__init__()
-                    screen.fill(BROWN)
+                    screen.blit(wood_img, [0, 0])
                     continue
                 if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     running = False
@@ -239,7 +235,7 @@ def main():
                     
                     print(move.getNotationStart())
                     # blitMove(screen,move)
-                    movesMadeTree(root, move)
+                    root.movesMadeTree(root, move)
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
