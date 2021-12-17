@@ -396,7 +396,7 @@ class button():
             self.screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 18))
             return action
 
-        def buttonColorManage(self,pos,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff):
+        def buttonColorManage(self,pos,undoButton,resetButton,quitButton,castleButton):
                 if self.WIDTH //100 <= pos[0] <= self.WIDTH//100 + 150 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 50:
                     undoButton.button_col = (self.GREEN)
                     resetButton.button_col = (self.WHITE)
@@ -406,8 +406,7 @@ class button():
                     castleButton.button_col = (self.WHITE)
                     castleButton.draw_button()
                     undoButton.draw_button()
-                    soundButtonOn.draw_button()
-                    soundButtonOff.draw_button()
+
                 elif self.WIDTH//100+170 <= pos[0] <= self.WIDTH//100+170 + 150 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <=self.HEIGHT-self.HEIGHT//2.5 + 50:
                     resetButton.button_col = (self.GREEN)
                     undoButton.button_col = (self.WHITE)
@@ -417,8 +416,7 @@ class button():
                     castleButton.button_col = (self.WHITE)
                     castleButton.draw_button()
                     resetButton.draw_button()
-                    soundButtonOn.draw_button()
-                    soundButtonOff.draw_button()
+
                 elif self.WIDTH//100+340 <= pos[0] <= self.WIDTH//100+340 + 215 and self.HEIGHT-self.HEIGHT//2.5 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 50:
                     quitButton.button_col = (self.GREEN)
                     undoButton.button_col = (self.WHITE)
@@ -428,8 +426,6 @@ class button():
                     castleButton.button_col = (self.WHITE)
                     castleButton.draw_button()
                     quitButton.draw_button()
-                    soundButtonOn.draw_button()
-                    soundButtonOff.draw_button()
 
                 elif self.WIDTH//100 <= pos[0] <= self.WIDTH//100 + 150 and self.HEIGHT-self.HEIGHT//2.5 + 70 <= pos[1] <= self.HEIGHT-self.HEIGHT//2.5 + 70 + 50:
                     castleButton.button_col = (self.GREEN)
@@ -440,8 +436,6 @@ class button():
                     quitButton.button_col = (self.WHITE)
                     quitButton.draw_button()
                     castleButton.draw_button()
-                    soundButtonOn.draw_button()
-                    soundButtonOff.draw_button()
 
                 else:
                     undoButton.button_col = (self.WHITE)
@@ -452,5 +446,3 @@ class button():
                     quitButton.draw_button()
                     castleButton.button_col = (self.WHITE)
                     castleButton.draw_button()
-                    soundButtonOn.draw_button()
-                    soundButtonOff.draw_button()
