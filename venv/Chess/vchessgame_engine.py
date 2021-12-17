@@ -57,7 +57,18 @@ class GameState():
                                 #if we undo a move there actually needs to be an implementation of some 
                                 #rules...movehistory, versus backtracking? does it count as a move? 
         self.Zombies = []
-    
+    def drawZombies(self, screen, dict):
+      wp = 0
+      bp = 0 
+      for zombie in self.Zombies: 
+          if zombie[0] == "w": 
+              screen.blit(dict[zombie][1],(500, 100+wp))
+              wp += 45
+          if zombie[0] == "b":
+              screen.blit(dict[zombie][1],(600, 100+bp))
+              bp += 45
+          
+
     def getPiece(self,pos):
         if pos[0] >= 8 or pos[1] >= 8:
             return
@@ -101,7 +112,7 @@ class GameState():
     
     def getGraph(self, move, library):
         piece = self.BOARD[move.startRow][move.StartCol]
-        if piece == "bN":
+        if piece == "bN":                                                                  
             pass
             #for all node in all possible nodes that the knight can reach in one node
             #tempgraphforknight.add_vertex(node)

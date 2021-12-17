@@ -15,7 +15,7 @@ pg.init()
 # ---Window---
 
 WIDTH = 750
-HEIGHT = 500
+HEIGHT = 900
 MAX_FPS = 15
 
 
@@ -73,6 +73,7 @@ def load_images():
 #include hashtable 
 
 
+
 def drawGS(screen,gs): 
     drawBoard(screen)
     drawPieces(screen,gs.BOARD, SQ_SIZE)
@@ -95,12 +96,6 @@ def drawPieces(screen,BOARD, SQ_SIZE):
 
 
 
-def drawZombies(screen,BOARD):
-    for row in range(MATRIX_DIM):
-        for square in range(MATRIX_DIM):
-            piece = BOARD[row][square]
-            if piece != "--":
-                    screen.blit(PIECES[piece], pg.Rect(500, row * ZSQ_SIZE, ZSQ_SIZE, ZSQ_SIZE))
 
 
 def blitMove(screen,move): 
@@ -257,13 +252,7 @@ def main():
             if EVENT.type == pg.QUIT: 
                 running = False
 
-
-
-
             #key down
-
-          
-
             # here i am just making sure that we handle mouse events (moving pieces etc) 
 
             elif EVENT.type == pg.MOUSEBUTTONDOWN: 
@@ -284,6 +273,8 @@ def main():
                 col, row = pos[0]//SQ_SIZE , pos[1]//SQ_SIZE
                 coordinateRowColumn = [row,col]  
                 piece = gs.getPiece(coordinateRowColumn)
+
+
                 print(piece)
 
                 # base case invalid move, if invalid resets klick lists
@@ -318,10 +309,8 @@ def main():
                     gs.makeMove(move)
                     
                     if len(gs.Zombies) != 0:
-                      for zombie in gs.Zombie: 
-                          for i in range(7): 
-                              for j in range(8):
-                                screen.blit
+                        gs.drawZombies(screen, PIECES)
+                    
 
                     # if z in zombies.
 
