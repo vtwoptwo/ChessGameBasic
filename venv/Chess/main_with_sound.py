@@ -176,6 +176,8 @@ def main():
     myfont = pg.font.SysFont("public-sans", 50)
     sound = myfont.render("SOUND", 1, (255,255,0))
     screen.blit(sound, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
+    zombiestxt = myfont.render("ZOMBIES", 1, (255,255,0))
+    screen.blit(zombiestxt, (WIDTH//100+530,HEIGHT-HEIGHT//1+10))
     soundOn = pg.image.load('venv/Chess/images/on.png')
     soundOff = pg.image.load('venv/Chess/images/off.png')
     soundOn = pg.transform.scale(soundOn, (325, 50))
