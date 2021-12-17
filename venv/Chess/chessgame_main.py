@@ -128,7 +128,6 @@ def castling(bool, move, root):
             pass #do the castling 
 
 
-#button class 
 
 # --- piece class ---
 
@@ -147,79 +146,7 @@ def main():
 
 
     #button class 
-    class button():
-        
-        #colours for button and text
-        
-        button_col = (255, 255, 255)
-        hover_col = (75, 225, 255)
-        click_col = (50, 150, 255)
-        text_col = (0,0,0)
-        width = 150
-        height = 50
-        
-
-        def __init__(self, x, y, text):
-            self.x = x
-            self.y = y
-            self.text = text
-
-        def draw_button(self):
-
-            global clicked
-            action = False
-            clicked = False
-            font = pg.font.SysFont('Constantia', 20)
-            #get mouse position
-            #pos = pg.mouse.get_pos()
-
-            #create pygame Rect object for the button
-            button_rect = Rect(self.x, self.y, self.width, self.height)
-            
-            #check mouseover and clicked conditions
-            
-            pg.draw.rect(screen, self.button_col, button_rect)
-            
-            #add shading to button
-            pg.draw.line(screen, BLACK, (self.x, self.y + self.height), (self.x + self.width, self.y + self.height), 2)
-            pg.draw.line(screen, BLACK, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
-
-            #add text to button
-            text_img = font.render(self.text, True, self.text_col)
-            text_len = text_img.get_width()
-            screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y + 18))
-            return action
-
-
-    def buttonColorManage(pos):
-            if WIDTH//100 <= pos[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= pos[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                undoButton.button_col = (GREEN)
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
-                undoButton.draw_button()
-            elif WIDTH//100+170 <= pos[0] <= WIDTH//100+170 + 150 and HEIGHT-HEIGHT//2.5 <= pos[1] <=HEIGHT-HEIGHT//2.5 + 50:
-                resetButton.button_col = (GREEN)
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
-                resetButton.draw_button()
-            elif WIDTH//100+340 <= pos[0] <= WIDTH//100+340 + 215 and HEIGHT-HEIGHT//2.5 <= pos[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                quitButton.button_col = (GREEN)
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.draw_button()
-            else:
-                undoButton.button_col = (WHITE)
-                undoButton.draw_button()
-                resetButton.button_col = (WHITE)
-                resetButton.draw_button()
-                quitButton.button_col = (WHITE)
-                quitButton.draw_button()
+    
             
 
     #drawing on the screen 
@@ -237,12 +164,14 @@ def main():
     running = True 
     print(HEIGHT-HEIGHT//2.5)
     print(WIDTH//100)
-    undoButton = button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO')
-    resetButton = button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET')
-    quitButton = button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT')
+    undoButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5,'UNDO',screen)
+    resetButton = Engine.button(WIDTH//100+170,HEIGHT-HEIGHT//2.5,'RESET',screen)
+    quitButton = Engine.button(WIDTH//100+340,HEIGHT-HEIGHT//2.5,'QUIT',screen)
+    castleButton = Engine.button(WIDTH//100,HEIGHT-HEIGHT//2.5 + 70, 'CASTLE-ME',screen)
     quitButton.draw_button()
     resetButton.draw_button()
     undoButton.draw_button()
+    castleButton.draw_button()
 
     klicked_SQ = ()
     klick_PL = []
@@ -270,6 +199,8 @@ def main():
                 if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
                     running = False
 
+                if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 + 70 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 70 + 50:
+                    print('CASTLE-ME')
 
                 #Translating pixel to row,col coord
                 pos = pg.mouse.get_pos()
@@ -322,7 +253,10 @@ def main():
                     klick_PL = []
 
             posbut = pg.mouse.get_pos()
-            buttonColorManage(posbut)
+            undoButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            resetButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
                     #gs.undoMove()    
