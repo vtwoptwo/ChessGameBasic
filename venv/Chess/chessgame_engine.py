@@ -22,24 +22,9 @@ class WGraph:
 
 
 
-
-class Zombies(): 
-    def __init__(self): 
-        self.whiteZombies = [
-            ["wP""wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
-        ]
-
-        self.blackZombies = [
-            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-        ]
-
-
 class GameState():
     def __init__(self):
-        # so far a 2d matrix 
-        
+        # so far a 2d matrix
         self.BOARD = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
@@ -50,8 +35,8 @@ class GameState():
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
         ]
-
         self.whiteMove = True
+
 
         self.movehistory = [] # implementation of a stack :) this can be used to undo a move 
                                 #if we undo a move there actually needs to be an implementation of some 
@@ -94,21 +79,27 @@ class GameState():
 
     #including an undo function
 
-    def undoMove(self):
+    def undoMove(self, root):
         if len(self.movehistory) == 0:
             return # makes sure program doesnt crash if undo button is pressed and move history is empty
         else:
             if len(self.Zombies) != 0:
               self.Zombies.pop()
             umove = self.movehistory.pop()
+            root.movesUndoTree(root,umove)
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
+            
             self.whiteMove = not self.whiteMove
             
+# def undoTree(root, umove):
+#   umove_text = umove.getNotationFull()
+#   if root is not None:
+#     root.remove(root, umove_text)
+
 
     def ValidMoves(): 
         pass
-
 
     #creating recommendation system using adjacency list and graphs
     
@@ -209,16 +200,19 @@ class Move():
         self.PieceDed = BOARD[self.endRow][self.endCol]
 
     def getNotationFull(self):
-        return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
+      return self.get_lett(self.startRow, self.startCol) + self.get_lett(self.endRow, self.endCol)
 
     def getNotationStart(self): 
-        return self.get_lett(self.startRow, self.startCol)
+      return self.get_lett(self.startRow, self.startCol)
+    
+    def getNotationBack(self):
+      return self.get_lett(self.endRow, self.endCol) + self.get_lett(self.startRow, self.startCol)
 
     def strNotation(self): 
-        return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
+      return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
     
-    def get_lett(self, row, col): 
-        return self.col_2_lett[col] + self.row_2_num[row]
+    def get_lett(self, row, col):
+      return self.col_2_lett[col] + self.row_2_num[row]
 
 
 
@@ -267,9 +261,105 @@ class TreeNode:
 
   def movesMadeTree(self,root, move):
     move_text = move.getNotationFull()
-    print("MOVES MADE:",root,move_text)
     self.insert(root, move_text)
     self.print_tree(root)
+  
+  def movesUndoTree(self,root, move): 
+    umove_text = move.getNotationFull()
+    self.remove(root, umove_text)
+    self.print_tree(root)
+
+  def inorder(self, root): 
+    if root is None: 
+      return
+
+    self.inorder(root.left_child)
+    print(root.value, end = '')
+    self.inorder(root.right_child)
+
+
+  def minValue(self, node):
+    while(node.left_child is not None): 
+      node = node.left_child
+    return node
+
+  def movesMadeTree(self,root, move):
+    move_text = move.getNotationFull()
+    self.insert(root, move_text)
+    self.print_tree(root)
+
+  def minValue(self,node):
+          n = node
+          while(n.left_child is not None): 
+            n = n.left_child
+          return n
+  
+  def remove(self,root, value):
+     # Base Case
+    if root is None:
+        return root
+ 
+    # Recursive calls for ancestors of
+    # node to be deleted
+    if value < root.value:
+        root.left_child = self.remove(root.left_child, value)
+        return root
+ 
+    elif(value > root.value):
+        root.right_child = self.remove(root.right_child, value)
+        return root
+ 
+    # We reach here when root is the node
+    # to be deleted.
+     
+    # If root node is a leaf node
+     
+    if root.left_child is None and root.right_child is None:
+          return None
+ 
+    # If one of the children is empty
+ 
+    if root.left_child is None:
+        temp = root.right_child
+        root = None
+        return temp
+ 
+    elif root.right_child is None:
+        temp = root.left_child
+        root = None
+        return temp
+ 
+    # If both children exist
+ 
+    pParent = root
+ 
+    # Find Successor
+ 
+    pre_parent = root.right_child
+ 
+    while pre_parent.left_child != None:
+        pParent = pre_parent
+        pre_parent = pre_parent.left_child
+ 
+    # Delete successor.Since successor
+    # is always left_child child of its parent
+    # we can safely make successor's right_child
+    # right_child child as left_child of its parent.
+    # If there is no pre_parent, then assign
+    # pre_parent->right_child to pParent->right_child
+    if pParent != root:
+        pParent.left_child = pre_parent.right_child
+    else:
+        pParent.right_child = pre_parent.right_child
+ 
+    # Copy Successor Data to root
+ 
+    root.value = pre_parent.value
+ 
+    return root
+    
+
+      
 
 class button():
         
@@ -302,7 +392,7 @@ class button():
             self.GREEN = GREEN
             self.HEIGHT = HEIGHT
             self.WIDTH = WIDTH
-
+       
         def draw_button(self):
 
             global clicked

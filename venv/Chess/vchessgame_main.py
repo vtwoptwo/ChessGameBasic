@@ -185,11 +185,13 @@ def main():
                 #Button Operations
                 posb = pg.mouse.get_pos()
                 if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                    gs.undoMove()
+                    gs.undoMove(root)
                     screen.blit(wood_img, [0, 0])
                     gs.drawZombies(screen,PIECES)
+                    continue
                 if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
                     gs.__init__()
+                    root.__init__("e4")
                     screen.blit(wood_img, [0, 0])
                     continue
                 if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
