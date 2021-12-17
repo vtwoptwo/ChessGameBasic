@@ -124,9 +124,7 @@ def castling(bool, move, root):
         if a and b == None: 
             pass #do the castling 
 
-def removeFromTree(root,node):
-    move_text = node.getNotationFull()
-    root.remove(root,move_text)
+
 
 # --- piece class ---
 
@@ -187,13 +185,13 @@ def main():
                 #Button Operations
                 posb = pg.mouse.get_pos()
                 if WIDTH//100 <= posb[0] <= WIDTH//100 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
-                    gs.undoMove()
+                    gs.undoMove(root)
                     screen.blit(wood_img, [0, 0])
                     gs.drawZombies(screen,PIECES)
-                    
+                    continue
                 if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 <= posb[1] <=HEIGHT-HEIGHT//2.5 + 50:
                     gs.__init__()
-                    root.__init__('e4')
+                    root.__init__("e4")
                     screen.blit(wood_img, [0, 0])
                     continue
                 if WIDTH//100+340 <= posb[0] <= WIDTH//100+ 340 + 215 and HEIGHT-HEIGHT//2.5 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 50:
@@ -209,6 +207,7 @@ def main():
                 piece = gs.getPiece(coordinateRowColumn)
 
 
+                print(piece)
 
                 # base case invalid move, if invalid resets klick lists
                 if klicked_SQ == (row,col) or row >= 8 or col >= 8: # checks if click is outside of chess board if true
@@ -236,6 +235,7 @@ def main():
                 if len(klick_PL) == 2:
                     move = Engine.Move(klick_PL[0], klick_PL[1], gs.BOARD)
                     
+                    print(move.getNotationStart())
                     # blitMove(screen,move)
                     root.movesMadeTree(root, move)
                     gs.makeMove(move)
