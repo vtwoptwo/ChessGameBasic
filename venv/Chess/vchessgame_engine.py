@@ -213,6 +213,7 @@ class Move():
 
     def getNotationStart(self): 
         return self.get_lett(self.startRow, self.startCol)
+    
 
     def strNotation(self): 
         return print((self.get_lett(self.startRow, self.startCol), "->" , self.get_lett(self.endRow, self.endCol).encode()))
@@ -302,7 +303,7 @@ class button():
             self.GREEN = GREEN
             self.HEIGHT = HEIGHT
             self.WIDTH = WIDTH
-
+       
         def draw_button(self):
 
             global clicked
