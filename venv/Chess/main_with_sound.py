@@ -173,11 +173,15 @@ def main():
     resetButton.draw_button()
     undoButton.draw_button()
     castleButton.draw_button()
-    soundButtonOn.draw_button()
-    soundButtonOff.draw_button()
     myfont = pg.font.SysFont("public-sans", 50)
-    label = myfont.render("SOUND", 1, (255,255,0))
-    screen.blit(label, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
+    sound = myfont.render("SOUND", 1, (255,255,0))
+    screen.blit(sound, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
+    soundOn = pg.image.load('venv/Chess/images/on.png')
+    soundOff = pg.image.load('venv/Chess/images/off.png')
+    soundOn = pg.transform.scale(soundOn, (325, 50))
+    soundOff = pg.transform.scale(soundOff, (325, 50))
+    screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
+
 
     klicked_SQ = ()
     klick_PL = []
@@ -211,14 +215,12 @@ def main():
                     print('CASTLE-ME')
 
                 if WIDTH//100+170 <= posb[0] <= WIDTH//100 + 170 + 150 and HEIGHT-HEIGHT//2.5 + 140 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 140 + 50:
-                    soundButtonOn.button_col = (255,0,0) 
-                    soundButtonOff.button_col = (WHITE)
+                    screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
                     val = 1            
                     gs.soundval(val)
 
                 if WIDTH//100 + 340 <= posb[0] <= WIDTH-WIDTH//100 + 340 + 215 and HEIGHT-HEIGHT//2.5 + 140 <= posb[1] <= HEIGHT-HEIGHT//2.5 + 140 + 50:
-                    soundButtonOff.button_col = (255,0,0) 
-                    soundButtonOn.button_col = (WHITE)              
+                    screen.blit(soundOff, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))             
                     val = 0
                     gs.soundval(val)
 
@@ -271,14 +273,18 @@ def main():
                     klick_PL = []
 
             posbut = pg.mouse.get_pos()
-            undoButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            resetButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            soundButtonOn.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
-            soundButtonOn.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton,soundButtonOn,soundButtonOff)
+            undoButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            resetButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            quitButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            castleButton.buttonColorManage(posbut,undoButton,resetButton,quitButton,castleButton)
+            screen.blit(sound, (WIDTH//100+10,HEIGHT-HEIGHT//2.5+150))
+            if val == 0:
+                screen.blit(soundOff, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
+            elif val == 1:
+                screen.blit(soundOn, (WIDTH//100+170,HEIGHT-HEIGHT//2.5+140))
+
 
             #elif EVENT.type == pg.KEYDOWN:
                 #if EVENT.key ==  pg.K_u: #u for undo
