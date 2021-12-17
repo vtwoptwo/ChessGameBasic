@@ -94,7 +94,7 @@ class GameState():
 
     #including an undo function
 
-    def undoMove(self):
+    def undoMove(self, root):
         if len(self.movehistory) == 0:
             return # makes sure program doesnt crash if undo button is pressed and move history is empty
         else:
@@ -103,6 +103,7 @@ class GameState():
             umove = self.movehistory.pop()
             self.BOARD[umove.startRow][umove.startCol] = umove.PieceMoved
             self.BOARD[umove.endRow][umove.endCol] = umove.PieceDed
+            remove(root, umove.getNotationFull())
             self.whiteMove = not self.whiteMove
             
 
@@ -226,16 +227,64 @@ class Move():
 
         
 class TreeNode:
+  
   def __init__(self, value):
     self.value = value
     self.left_child = None
     self.right_child = None
+
 
 def print_tree(node, level=0):
   if node:
     print_tree(node.right_child, level + 1)
     print(' ' * 4 * level + '->', node.value)
     print_tree(node.left_child, level + 1)
+
+
+def minValue(node):
+  n = node
+  while(n.left_child is not None): 
+    n = n.left_child
+
+  return n
+
+def reset(node, level = 0 ): 
+  if node: 
+    remove(node.right_child, level + 1)
+    remove(4 * level, node.value)
+    remove(node.left_child, level + 1)
+
+
+
+def remove(root, value):
+  if root is not None: 
+    return root # base case 
+
+  # the following two cases evalue wether the node to be removed 
+  #  is found on the left or right of the tree
+  if value < root.value: 
+    root.left_child = remove(root.left_child, value)
+  
+  elif(value > root.value): 
+    root.right_child = remove(root.right_child, value)
+
+  else:
+    # the following to cases are meant to account for a missing node 
+    #effectively when a root has one or zero children
+    if root.left_child is None: 
+      t = root.right_child
+      root = None
+      return t
+
+    if root.right_child is None: 
+      t = root.left_child
+      root = None
+      return t
+
+    t = minValue(root.right_child)
+    root.value = t.value
+
+    root.right_child = remove(root.right_child, t.value)
 
 def insert(root, value):
   if root is None: # We cannot insert on an empty root. The root should exist first.
